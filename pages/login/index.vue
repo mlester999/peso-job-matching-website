@@ -1,0 +1,4 @@
+<template>
+    <NuxtLoadingIndicator />
+    <LoginMain />
+</template>
