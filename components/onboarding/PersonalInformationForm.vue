@@ -145,7 +145,7 @@ const handleSubmit = async () => {
         errors.password = '';
         errors.password_confirmation = '';
 
-        onboarding.currentPage(2);
+        onboarding.updateCurrentPage(2);
     }
 };
 </script>

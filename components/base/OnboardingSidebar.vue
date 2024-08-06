@@ -12,13 +12,18 @@ onBeforeMount(() => {
             if (auth.user.applicant.skills) {
                 onboarding.checkCurrentProgress(4);
             } else {
-                onboarding.checkCurrentProgress(3);
+                onboarding.checkCurrentProgress(5);
             }
         } else {
-            onboarding.checkCurrentProgress(2);
+            onboarding.checkCurrentProgress(3);
         }
     } else {
-        onboarding.checkCurrentProgress(1);
+        if (auth.user.applicant.zip_code) {
+            console.log('auth.user.applicant: ', auth.user.applicant);
+            onboarding.checkCurrentProgress(2);
+        } else {
+            onboarding.checkCurrentProgress(1);
+        }
     }
 })
 
@@ -40,7 +45,7 @@ const steps = [
             <ol role="list" class="overflow-hidden">
                 <li v-for="(step, stepIdx) in steps" :key="step.name"
                     :class="[stepIdx !== steps.length - 1 ? 'pb-10' : '', 'relative']">
-                    <template v-if="onboarding.currentPage > step.page">
+                    <template v-if="onboarding.currentProgress > step.page">
                         <div v-if="stepIdx !== steps.length - 1"
                             class="absolute left-4 top-4 -ml-px mt-0.5 h-full w-0.5 bg-indigo-600" aria-hidden="true" />
                         <button type="button" class="group relative flex items-center">
@@ -55,7 +60,7 @@ const steps = [
                             </span>
                         </button>
                     </template>
-                    <template v-else-if="onboarding.currentPage === step.page">
+                    <template v-else-if="onboarding.currentProgress === step.page">
                         <div v-if="stepIdx !== steps.length - 1"
                             class="absolute left-4 top-4 -ml-px mt-0.5 h-full w-0.5 bg-gray-300" aria-hidden="true" />
                         <button type="button" class="group relative flex items-center">
@@ -76,7 +81,7 @@ const steps = [
                         <button type="button" class="group relative flex items-center"
                             :disabled="onboarding.currentProgress < step.page">
                             <span class="flex h-9 items-center" aria-hidden="true">
-                                <span v-if="onboarding.currentPage < step.page"
+                                <span v-if="onboarding.currentProgress < step.page"
                                     class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-300 bg-white">
                                     <span class="h-2.5 w-2.5 rounded-full bg-transparent" />
                                 </span>
@@ -85,7 +90,7 @@ const steps = [
                                     <span class="h-2.5 w-2.5 rounded-full bg-transparent group-hover:bg-gray-300" />
                                 </span>
                             </span>
-                            <span v-if="onboarding.currentPage < step.page" class="flex flex-col mx-auto">
+                            <span v-if="onboarding.currentProgress < step.page" class="flex flex-col mx-auto">
                                 <span class="text-xl font-medium text-gray-400 mx-8">{{ step.name }}</span>
                             </span>
                             <span v-else class="flex flex-col mx-auto">
