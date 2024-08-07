@@ -10,33 +10,33 @@ import {
 
 const features = [
     {
-        name: 'Push to deploy.',
-        description: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit aute id magna.',
+        name: 'Instant Onboarding.',
+        description: 'Seamless and quick registration process with immediate onboarding to get you started right away.',
         icon: CloudArrowUpIcon,
     },
     {
-        name: 'SSL certificates.',
-        description: 'Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo.',
+        name: 'Advanced Matching Algorithm.',
+        description: 'Intelligent system that matches job seekers with the best-fit job opportunities based on skills, experience, and preferences.',
         icon: LockClosedIcon,
     },
     {
-        name: 'Simple queues.',
-        description: 'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus.',
+        name: 'Real-Time Notifications.',
+        description: 'Stay updated with instant notifications about job matches, application statuses, and employer feedback.',
         icon: ArrowPathIcon,
     },
     {
-        name: 'Advanced security.',
-        description: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit aute id magna.',
+        name: 'Employer Verification.',
+        description: 'Fast and secure employer verification process ensuring trustworthy and reliable job postings.',
         icon: FingerPrintIcon,
     },
     {
-        name: 'Powerful API.',
-        description: 'Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo.',
+        name: 'Profile Customization.',
+        description: 'Create and personalize your profile to highlight your skills, experience, and achievements to stand out to potential employers.',
         icon: Cog6ToothIcon,
     },
     {
-        name: 'Database backups.',
-        description: 'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. ',
+        name: 'Skill Assessments.',
+        description: 'Access to various skill assessments to showcase your competencies and improve your chances of getting matched with top jobs.',
         icon: ServerIcon,
     },
 ]
@@ -46,17 +46,16 @@ const features = [
     <div class="mt-32 sm:mt-56">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="mx-auto max-w-2xl sm:text-center">
-                <h2 class="text-base font-semibold leading-7 text-blue-600">Everything you need</h2>
-                <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">No server? No
-                    problem.</p>
-                <p class="mt-6 text-lg leading-8 text-gray-600">Lorem ipsum, dolor sit amet consectetur
-                    adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate
-                    blanditiis.</p>
+                <h2 class="text-base font-semibold leading-7 text-blue-600">Fast Track Your Job Matching</h2>
+                <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Quick Onboarding: Get
+                    Started Now!</p>
+                <p class="mt-6 text-lg leading-8 text-gray-600">Guess what? The moment you register an account with us,
+                    you’re not just signing up, you’re getting onboarded right away! 🚀</p>
             </div>
         </div>
         <div class="relative overflow-hidden pt-16">
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
-                <img src="https://tailwindui.com/img/component-images/project-app-screenshot.png" alt="App screenshot"
+                <img src="/public/project_photo_1.jpg" alt="App screenshot"
                     class="mb-[-12%] rounded-xl shadow-2xl ring-1 ring-gray-900/10" width="2432" height="1442" />
                 <div class="relative" aria-hidden="true">
                     <div class="absolute -inset-x-20 bottom-0 bg-gradient-to-t from-white pt-[7%]" />

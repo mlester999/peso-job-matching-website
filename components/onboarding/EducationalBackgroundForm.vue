@@ -1,7 +1,9 @@
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed, watch } from 'vue';
 import { useAuthStore } from '~/store/useAuthStore';
 import { useOnboardingStore } from '~/store/useOnboardingStore';
+import { coursesAndPrograms } from '~/utils/coursesAndPrograms';
+import { educationalLevels } from '~/utils/educationalLevels';
 
 const auth = useAuthStore();
 const onboarding = useOnboardingStore();
@@ -13,6 +15,8 @@ onMounted(() => {
 const form = ref({
     schoolName: '',
     educationalLevel: '',
+    level: '',
+    course: '',
     startDate: '',
     endDate: '',
     honorsReceived: ''
@@ -21,6 +25,8 @@ const form = ref({
 const errors = reactive({
     schoolName: '',
     educationalLevel: '',
+    level: '',
+    course: '',
     startDate: '',
     endDate: '',
     honorsReceived: ''
@@ -48,6 +54,25 @@ const handleSubmit = async () => {
         onboarding.currentPage(3);
     }
 };
+
+const isNotCollege = computed(() => {
+    const disallowedLevels = [
+        '1st Year College',
+        '2nd Year College',
+        '3rd Year College',
+        '4th Year College',
+        '5th Year College',
+        'Post Graduate'
+    ];
+    return disallowedLevels.includes(form.value.educationalLevel);
+});
+
+watch(() => form.value.educationalLevel, (newLevel) => {
+    if (!isNotCollege.value) {
+        form.value.level = ''
+        form.value.course = ''
+    }
+});
 </script>
 
 <template>
@@ -58,77 +83,51 @@ const handleSubmit = async () => {
 
                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div class="sm:col-span-2">
-                        <BaseInputField id="firstName" title="First Name" v-model="form.firstName" type="text"
-                            :errorMessage="errors?.firstName" />
+                        <BaseInputField id="schoolName" title="School Name" v-model="form.schoolName" type="text"
+                            :errorMessage="errors?.schoolName" />
                     </div>
 
                     <div class="sm:col-span-2">
-                        <BaseInputField id="middleName" title="Middle Name (Optional)" v-model="form.middleName"
-                            type="text" :errorMessage="errors?.middleName" />
-                    </div>
-
-                    <div class="sm:col-span-2">
-                        <BaseInputField id="lastName" title="Last Name" v-model="form.lastName" type="text"
-                            :errorMessage="errors?.lastName" />
-                    </div>
-
-                    <div class="sm:col-span-2">
-                        <BaseInputField id="email" title="Email Address" v-model="form.email" type="text"
-                            :errorMessage="errors?.email" />
-                    </div>
-
-                    <div class="sm:col-span-2">
-                        <BaseInputField id="birthDate" title="Birth Date" v-model="form.birthDate" type="date"
-                            :errorMessage="errors?.birthDate" />
-                    </div>
-
-                    <div class="sm:col-span-2">
-                        <BaseSelectField id="sex" title="Sex" v-model="form.sex" type="text"
-                            :errorMessage="errors?.sex">
-                            <option value="" disabled selected hidden>~ Select a sex ~</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </BaseSelectField>
-                    </div>
-
-                    <div class="sm:col-span-2">
-                        <BaseSelectField id="province" title="Province" v-model="form.province" type="text"
-                            :errorMessage="errors?.province">
-                            <option value="Laguna">Laguna</option>
-                        </BaseSelectField>
-                    </div>
-
-                    <div class="sm:col-span-2">
-                        <BaseSelectField id="city" title="City" v-model="form.city" type="text"
-                            :errorMessage="errors?.city">
-                            <option value="Cabuyao">Cabuyao</option>
-                        </BaseSelectField>
-                    </div>
-
-                    <div class="sm:col-span-2">
-                        <BaseSelectField id="barangay" title="Barangay" v-model="form.barangay" type="text"
-                            :errorMessage="errors?.barangay">
-                            <option value="" disabled selected hidden>~ Select Barangay ~</option>
-                            <option v-for="(barangay, index) in barangays" :key="index">
-                                {{ barangay }}
+                        <BaseSelectField id="educationalLevel" title="Educational Level" v-model="form.educationalLevel"
+                            :errorMessage="errors?.educationalLevel">
+                            <option value="" disabled selected hidden>~ Select educational level ~</option>
+                            <option v-for="level in educationalLevels" :key="level.value" :value="level.value">
+                                {{ level.text }}
                             </option>
                         </BaseSelectField>
                     </div>
 
                     <div class="sm:col-span-2">
-                        <BaseInputField id="streetAddress" title="Street Address" v-model="form.streetAddress"
-                            type="text" :errorMessage="errors?.streetAddress" />
+                        <BaseSelectField id="level" title="Level" v-model="form.level" :errorMessage="errors?.level"
+                            :disabled="!isNotCollege">
+                            <option value="" disabled selected hidden>~ Select level ~</option>
+                            <option value="Vocational">Vocational</option>
+                            <option value="Programs">Programs</option>
+                            <option value="College">College</option>
+                            <option value="Post Graduate">Post Graduate</option>
+                        </BaseSelectField>
                     </div>
 
                     <div class="sm:col-span-2">
-                        <BaseInputField id="zipCode" title="Zip Code" v-model="form.zipCode" type="text"
-                            :errorMessage="errors?.zipCode" />
+                        <BaseSelectField id="course" title="course" v-model="form.course" :errorMessage="errors?.course"
+                            :disabled="!isNotCollege">
+                            <option value="" disabled selected hidden>~ Select course ~</option>
+                            <option v-for="course in coursesAndPrograms" :key="course.value" :value="course.value">
+                                {{ course.text }}
+                            </option>
+                        </BaseSelectField>
                     </div>
 
                     <div class="sm:col-span-2">
-                        <BaseInputField id="contactNumber" title="Contact Number" v-model="form.contactNumber"
-                            type="text" :errorMessage="errors?.contactNumber" />
+                        <BaseInputField id="startDate" title="Start Date" v-model="form.startDate" type="date"
+                            :errorMessage="errors?.startDate" />
                     </div>
+
+                    <div class="sm:col-span-2">
+                        <BaseInputField id="endDate" title="End Date" v-model="form.endDate" type="date"
+                            :errorMessage="errors?.endDate" />
+                    </div>
+
                 </div>
             </div>
         </div>

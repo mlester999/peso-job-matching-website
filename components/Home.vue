@@ -14,7 +14,7 @@
             <!-- <MainTestimonialSection /> -->
 
             <!-- Pricing section -->
-            <MainPricingSection />
+            <!-- <MainPricingSection /> -->
 
             <!-- FAQ section -->
 

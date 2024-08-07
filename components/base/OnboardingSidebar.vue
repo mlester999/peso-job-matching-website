@@ -46,24 +46,31 @@ const steps = [
                 <li v-for="(step, stepIdx) in steps" :key="step.name"
                     :class="[stepIdx !== steps.length - 1 ? 'pb-10' : '', 'relative']">
                     <template v-if="onboarding.currentProgress > step.page">
-                        <div v-if="stepIdx !== steps.length - 1"
+                        <div v-if="stepIdx !== steps.length - 1 && onboarding.currentPage !== step.page"
                             class="absolute left-4 top-4 -ml-px mt-0.5 h-full w-0.5 bg-indigo-600" aria-hidden="true" />
-                        <button type="button" class="group relative flex items-center">
+                        <div v-else class="absolute left-4 top-4 -ml-px mt-0.5 h-full w-0.5 bg-gray-300"
+                            aria-hidden="true" />
+                        <button @click="onboarding.updateCurrentPage(step.page)" type="button"
+                            class="group relative flex items-center">
                             <span class=" flex h-9 items-center">
                                 <span
                                     class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 group-hover:bg-indigo-800">
                                     <CheckIcon class="h-5 w-5 text-white" aria-hidden="true" />
                                 </span>
                             </span>
-                            <span class="flex flex-col mx-auto">
+                            <span v-if="onboarding.currentPage === step.page" class="flex flex-col mx-auto">
+                                <span class="text-xl font-medium text-indigo-600 mx-8">{{ step.name }}</span>
+                            </span>
+                            <span v-else class="flex flex-col mx-auto">
                                 <span class="text-xl font-medium mx-8">{{ step.name }}</span>
                             </span>
                         </button>
                     </template>
-                    <template v-else-if="onboarding.currentProgress === step.page">
+                    <template v-else-if="onboarding.currentPage === step.page">
                         <div v-if="stepIdx !== steps.length - 1"
                             class="absolute left-4 top-4 -ml-px mt-0.5 h-full w-0.5 bg-gray-300" aria-hidden="true" />
-                        <button type="button" class="group relative flex items-center">
+                        <button @click="onboarding.updateCurrentPage(step.page)" type="button"
+                            class="group relative flex items-center">
                             <span class="flex h-9 items-center" aria-hidden="true">
                                 <span
                                     class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 border-indigo-600 bg-white">
@@ -78,8 +85,8 @@ const steps = [
                     <template v-else>
                         <div v-if="stepIdx !== steps.length - 1"
                             class="absolute left-4 top-4 -ml-px mt-0.5 h-full w-0.5 bg-gray-300" aria-hidden="true" />
-                        <button type="button" class="group relative flex items-center"
-                            :disabled="onboarding.currentProgress < step.page">
+                        <button @click="onboarding.updateCurrentPage(step.page)" type="button"
+                            class="group relative flex items-center" :disabled="onboarding.currentProgress < step.page">
                             <span class="flex h-9 items-center" aria-hidden="true">
                                 <span v-if="onboarding.currentProgress < step.page"
                                     class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-300 bg-white">
