@@ -20,6 +20,20 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     return personalInformationResponse;
   };
 
+  const submitEducationalBackground = async (info, applicantId) => {
+    isLoading.value = true;
+    await useApiFetch('/sanctum/csrf-cookie');
+
+    const submitEducationalResponse = await useApiFetch(`/api/submit-educational-background/${applicantId}`, {
+      method: 'POST',
+      body: info,
+    });
+
+    isLoading.value = false;
+
+    return submitEducationalResponse;
+  };
+
   const updateCurrentPage = (newPage) => {
     currentPage.value = newPage;
   }
@@ -28,5 +42,5 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     currentProgress.value = progress;
   }
 
-  return { currentPage, isLoading, currentProgress, submitPersonalInformation, updateCurrentPage, checkCurrentProgress };
+  return { currentPage, isLoading, currentProgress, submitPersonalInformation, submitEducationalBackground, updateCurrentPage, checkCurrentProgress };
 });

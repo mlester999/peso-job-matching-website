@@ -33,9 +33,22 @@ const form = ref([
         courseQuery: '',
         startDate: '',
         endDate: '',
-        honorsReceived: ''
     }
 ])
+
+const errors = ref([
+    {
+        schoolName: '',
+        educationalLevel: '',
+        educationalLevelQuery: '',
+        level: '',
+        levelQuery: '',
+        course: '',
+        courseQuery: '',
+        startDate: '',
+        endDate: '',
+    }
+]);
 
 const addField = () => {
     form.value.push({
@@ -48,58 +61,84 @@ const addField = () => {
         courseQuery: '',
         startDate: '',
         endDate: '',
-        honorsReceived: ''
+    })
+    errors.value.push({
+        schoolName: '',
+        educationalLevel: '',
+        educationalLevelQuery: '',
+        level: '',
+        levelQuery: '',
+        course: '',
+        courseQuery: '',
+        startDate: '',
+        endDate: '',
     })
 }
 
 const removeField = (index) => {
     form.value.splice(index, 1)
+    errors.value.splice(index, 1)
 }
 
-// const form = ref({
-//     schoolName: '',
-//     educationalLevel: '',
-//     level: '',
-//     course: '',
-//     startDate: '',
-//     endDate: '',
-//     honorsReceived: ''
-// });
-
-const errors = reactive({
-    schoolName: '',
-    educationalLevel: '',
-    level: '',
-    course: '',
-    startDate: '',
-    endDate: '',
-    honorsReceived: ''
-});
-
 const handleSubmit = async () => {
-    const { error } = await onboarding.submitPersonalInformation(form.value, auth.user.applicant.id);
+    const { error } = await onboarding.submitEducationalBackground(form.value, auth.user.applicant.id);
 
+    console.log('error: ', error.value?.data?.error);
+    console.log('typeof error: ', typeof error.value?.data?.error);
     if (error.value?.data?.error) {
         if (typeof error.value.data.error !== 'string') {
-            if (error.value.data.error.firstName) {
-                errors.firstName = error.value.data.error.firstName[0];
-            } else {
-                errors.firstName = '';
-            }
+            errors.value.forEach((err, index) => {
+                if (error.value.data.error[`${index}.schoolName`]) {
+                    errors.value[index].schoolName = error.value.data.error[`${index}.schoolName`][0];
+                } else {
+                    errors.value[index].schoolName = '';
+                }
 
-            if (error.value.data.error.middleName) {
-                errors.middleName = error.value.data.error.middleName[0];
-            } else {
-                errors.middleName = '';
-            }
+                if (error.value.data.error[`${index}.educationalLevel`]) {
+                    errors.value[index].educationalLevel = error.value.data.error[`${index}.educationalLevel`][0];
+                } else {
+                    errors.value[index].educationalLevel = '';
+                }
+
+                if (error.value.data.error[`${index}.level`]) {
+                    errors.value[index].level = error.value.data.error[`${index}.level`][0];
+                } else {
+                    errors.value[index].level = '';
+                }
+
+                if (error.value.data.error[`${index}.course`]) {
+                    errors.value[index].course = error.value.data.error[`${index}.course`][0];
+                } else {
+                    errors.value[index].course = '';
+                }
+
+                if (error.value.data.error[`${index}.startDate`]) {
+                    errors.value[index].startDate = error.value.data.error[`${index}.startDate`][0];
+                } else {
+                    errors.value[index].startDate = '';
+                }
+
+                if (error.value.data.error[`${index}.endDate`]) {
+                    errors.value[index].endDate = error.value.data.error[`${index}.endDate`][0];
+                } else {
+                    errors.value[index].endDate = '';
+                }
+            })
         }
     } else {
-        errors.firstName = '';
-        onboarding.currentPage(3);
+        errors.value.forEach((error, index) => {
+            errors.value[index].schoolName = '';
+            errors.value[index].educationalLevel = '';
+            errors.value[index].level = '';
+            errors.value[index].course = '';
+            errors.value[index].startDate = '';
+            errors.value[index].endDate = '';
+        })
+        onboarding.updateCurrentPage(3);
     }
 };
 
-const isNotCollege = (index) => {
+const checkEducationalLevel = (index) => {
     const disallowedLevels = [
         '1st Year College',
         '2nd Year College',
@@ -108,21 +147,23 @@ const isNotCollege = (index) => {
         '5th Year College',
         'Post Graduate'
     ];
-    return disallowedLevels.includes(form.value[index].educationalLevel);
-};
 
-watch(() => form.value.educationalLevel, (newLevel) => {
-    if (!isNotCollege.value) {
-        form.value.level = ''
-        form.value.course = ''
+    const isNotCollege = disallowedLevels.includes(form.value[index].educationalLevel);
+
+    if (!isNotCollege) {
+        form.value[index].level = ''
+        form.value[index].course = ''
+
     }
-});
+
+    return isNotCollege;
+};
 
 const filteredEducationalLevel = (query) =>
     query === ''
         ? educationalLevels
         : educationalLevels.filter((el) => {
-            return el.text.toLowerCase().includes(query.toLowerCase())
+            return el.value.toLowerCase().includes(query.toLowerCase())
         }
         )
 
@@ -130,7 +171,7 @@ const filteredLevel = (query) =>
     query === ''
         ? levels
         : levels.filter((el) => {
-            return el.text.toLowerCase().includes(query.toLowerCase())
+            return el.value.toLowerCase().includes(query.toLowerCase())
         }
         )
 
@@ -138,7 +179,7 @@ const filteredCourse = (query) =>
     query === ''
         ? coursesAndPrograms
         : coursesAndPrograms.filter((el) => {
-            return el.text.toLowerCase().includes(query.toLowerCase())
+            return el.value.toLowerCase().includes(query.toLowerCase())
         }
         )
 </script>
@@ -159,7 +200,7 @@ const filteredCourse = (query) =>
 
                     <div class="sm:col-span-2">
                         <BaseInputField id="schoolName" title="School Name" v-model="field.schoolName" type="text"
-                            :errorMessage="errors?.schoolName" />
+                            :errorMessage="errors[index].schoolName" />
                     </div>
 
                     <div class="sm:col-span-2">
@@ -171,7 +212,7 @@ const filteredCourse = (query) =>
                                 <ComboboxInput
                                     class="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                     @change="field.educationalLevelQuery = $event.target.value"
-                                    @blur="field.educationalLevelQuery = ''" :display-value="(level) => level?.text" />
+                                    @blur="field.educationalLevelQuery = ''" :display-value="(level) => level" />
                                 <ComboboxButton
                                     class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
                                     <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -180,11 +221,11 @@ const filteredCourse = (query) =>
                                 <ComboboxOptions v-if="filteredEducationalLevel(field.educationalLevelQuery).length > 0"
                                     class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                     <ComboboxOption v-for="el in filteredEducationalLevel(field.educationalLevelQuery)"
-                                        :key="el.value" :value="el" as="template" v-slot="{ active, selected }">
+                                        :key="el.value" :value="el.value" as="template" v-slot="{ active, selected }">
                                         <li
                                             :class="['relative cursor-default select-none py-2 pl-8 pr-4', active ? 'bg-blue-600 text-white' : 'text-gray-900']">
                                             <span :class="['block truncate', selected && 'font-semibold']">
-                                                {{ el.text }}
+                                                {{ el.value }}
                                             </span>
 
                                             <span v-if="selected"
@@ -196,17 +237,20 @@ const filteredCourse = (query) =>
                                 </ComboboxOptions>
                             </div>
                         </Combobox>
+                        <p v-if="errors[index].educationalLevel" class="text-red-600 text-sm mt-1">{{
+                            errors[index].educationalLevel }}</p>
                     </div>
 
                     <div class="sm:col-span-2">
-                        <Combobox as="div" v-model="field.level" @update:modelValue="field.levelQuery = ''">
+                        <Combobox as="div" v-model="field.level" @update:modelValue="field.levelQuery = ''"
+                            :disabled="!checkEducationalLevel(index)">
                             <ComboboxLabel class="block text-sm font-medium leading-6 text-gray-900">Level
                             </ComboboxLabel>
                             <div class="relative mt-2">
                                 <ComboboxInput
                                     class="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                     @change="field.levelQuery = $event.target.value" @blur="field.levelQuery = ''"
-                                    :display-value="(level) => level?.text" />
+                                    :display-value="(level) => level" />
                                 <ComboboxButton
                                     class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
                                     <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -215,11 +259,11 @@ const filteredCourse = (query) =>
                                 <ComboboxOptions v-if="filteredLevel(field.levelQuery).length > 0"
                                     class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                     <ComboboxOption v-for="el in filteredLevel(field.levelQuery)" :key="el.value"
-                                        :value="el" as="template" v-slot="{ active, selected }">
+                                        :value="el.value" as="template" v-slot="{ active, selected }">
                                         <li
                                             :class="['relative cursor-default select-none py-2 pl-8 pr-4', active ? 'bg-blue-600 text-white' : 'text-gray-900']">
                                             <span :class="['block truncate', selected && 'font-semibold']">
-                                                {{ el.text }}
+                                                {{ el.value }}
                                             </span>
 
                                             <span v-if="selected"
@@ -231,17 +275,20 @@ const filteredCourse = (query) =>
                                 </ComboboxOptions>
                             </div>
                         </Combobox>
+                        <p v-if="errors[index].level" class="text-red-600 text-sm mt-1">{{
+                            errors[index].level }}</p>
                     </div>
 
                     <div class="sm:col-span-2">
-                        <Combobox as="div" v-model="field.course" @update:modelValue="field.courseQuery = ''">
+                        <Combobox as="div" v-model="field.course" @update:modelValue="field.courseQuery = ''"
+                            :disabled="!checkEducationalLevel(index)">
                             <ComboboxLabel class="block text-sm font-medium leading-6 text-gray-900">Course
                             </ComboboxLabel>
                             <div class="relative mt-2">
                                 <ComboboxInput
                                     class="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                     @change="field.courseQuery = $event.target.value" @blur="field.courseQuery = ''"
-                                    :display-value="(level) => level?.text" />
+                                    :display-value="(course) => course" />
                                 <ComboboxButton
                                     class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
                                     <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -250,11 +297,11 @@ const filteredCourse = (query) =>
                                 <ComboboxOptions v-if="filteredCourse(field.courseQuery).length > 0"
                                     class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                     <ComboboxOption v-for="el in filteredCourse(field.courseQuery)" :key="el.value"
-                                        :value="el" as="template" v-slot="{ active, selected }">
+                                        :value="el.value" as="template" v-slot="{ active, selected }">
                                         <li
                                             :class="['relative cursor-default select-none py-2 pl-8 pr-4', active ? 'bg-blue-600 text-white' : 'text-gray-900']">
                                             <span :class="['block truncate', selected && 'font-semibold']">
-                                                {{ el.text }}
+                                                {{ el.value }}
                                             </span>
 
                                             <span v-if="selected"
@@ -266,11 +313,13 @@ const filteredCourse = (query) =>
                                 </ComboboxOptions>
                             </div>
                         </Combobox>
+                        <p v-if="errors[index].course" class="text-red-600 text-sm mt-1">{{
+                            errors[index].course }}</p>
                     </div>
 
                     <!-- <div class="sm:col-span-2">
                         <BaseSelectField id="level" title="Level" v-model="field.level" :errorMessage="errors?.level"
-                            :disabled="!isNotCollege">
+                            :disabled="!checkEducationalLevel">
                             <option value="" disabled selected hidden>~ Select level ~</option>
                             <option value="Vocational">Vocational</option>
                             <option value="Programs">Programs</option>
@@ -281,7 +330,7 @@ const filteredCourse = (query) =>
                     <!-- 
                     <div class="sm:col-span-2">
                         <BaseSelectField id="course" title="Course" v-model="field.course"
-                            :errorMessage="errors?.course" :disabled="!isNotCollege(index)">
+                            :errorMessage="errors?.course" :disabled="!checkEducationalLevel(index)">
                             <option value="" disabled selected hidden>~ Select course ~</option>
                             <option v-for="course in coursesAndPrograms" :key="course.value" :value="course.value">
                                 {{ course.text }}
@@ -291,12 +340,12 @@ const filteredCourse = (query) =>
 
                     <div class="sm:col-span-2">
                         <BaseInputField id="startDate" title="Start Date" v-model="field.startDate" type="date"
-                            :errorMessage="errors?.startDate" />
+                            :errorMessage="errors[index].startDate" />
                     </div>
 
                     <div class="sm:col-span-2">
                         <BaseInputField id="endDate" title="End Date" v-model="field.endDate" type="date"
-                            :errorMessage="errors?.endDate" />
+                            :errorMessage="errors[index].endDate" />
                     </div>
 
                 </div>
