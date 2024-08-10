@@ -21,7 +21,7 @@ onMounted(() => {
     auth.fetchUser();
 })
 
-const form = ref([
+const form = ref(JSON.parse(auth.user.applicant.work_experience) ?? [
     {
         companyName: '',
         companyAddress: '',
@@ -35,7 +35,22 @@ const form = ref([
     }
 ])
 
-const errors = ref([
+// Computed property that generates the array based on education length
+const errorsWithData = computed(() => {
+    return Array.from({ length: JSON.parse(auth.user.applicant.work_experience).length }, () => ({
+        companyName: '',
+        companyAddress: '',
+        employmentType: '',
+        employmentTypeQuery: '',
+        jobTitle: '',
+        industry: '',
+        industryQuery: '',
+        startDate: '',
+        endDate: '',
+    }));
+});
+
+const errors = ref(errorsWithData.value.length > 0 ? errorsWithData.value : [
     {
         companyName: '',
         companyAddress: '',
@@ -172,6 +187,7 @@ const filteredIndustry = (query) =>
                     :class="{ 'border-b border-gray-900/10': index !== form.length - 1 }">
 
                     <div v-if="index > 0" @click="removeField(index)" class="sm:col-span-6 ml-auto -mb-12"><button
+                            type="button"
                             class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Remove</button>
                     </div>
 

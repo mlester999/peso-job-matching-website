@@ -22,7 +22,7 @@ onMounted(() => {
     auth.fetchUser();
 })
 
-const form = ref([
+const form = ref(JSON.parse(auth.user.applicant.education) ?? [
     {
         schoolName: '',
         educationalLevel: '',
@@ -36,7 +36,22 @@ const form = ref([
     }
 ])
 
-const errors = ref([
+// Computed property that generates the array based on education length
+const errorsWithData = computed(() => {
+    return Array.from({ length: JSON.parse(auth.user.applicant.education).length }, () => ({
+        schoolName: '',
+        educationalLevel: '',
+        educationalLevelQuery: '',
+        level: '',
+        levelQuery: '',
+        course: '',
+        courseQuery: '',
+        startDate: '',
+        endDate: '',
+    }));
+});
+
+const errors = ref(errorsWithData.value.length > 0 ? errorsWithData.value : [
     {
         schoolName: '',
         educationalLevel: '',
@@ -194,6 +209,7 @@ const filteredCourse = (query) =>
                     :class="{ 'border-b border-gray-900/10': index !== form.length - 1 }">
 
                     <div v-if="index > 0" @click="removeField(index)" class="sm:col-span-6 ml-auto -mb-12"><button
+                            type="button"
                             class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Remove</button>
                     </div>
 
@@ -248,7 +264,7 @@ const filteredCourse = (query) =>
                             </ComboboxLabel>
                             <div class="relative mt-2">
                                 <ComboboxInput
-                                    class="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                    class="w-full disabled:bg-gray-200 rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                     @change="field.levelQuery = $event.target.value" @blur="field.levelQuery = ''"
                                     :display-value="(level) => level" placeholder="Select Level" />
                                 <ComboboxButton
@@ -286,7 +302,7 @@ const filteredCourse = (query) =>
                             </ComboboxLabel>
                             <div class="relative mt-2">
                                 <ComboboxInput
-                                    class="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                    class="w-full disabled:bg-gray-200 rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                     @change="field.courseQuery = $event.target.value" @blur="field.courseQuery = ''"
                                     :display-value="(course) => course" placeholder="Select Course" />
                                 <ComboboxButton

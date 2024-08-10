@@ -1,18 +1,25 @@
 import { defineStore } from 'pinia';
 import { useApiFetch } from '~/composables/useApiFetch';
-import nuxtStorage from 'nuxt-storage';
 
 export const useOnboardingStore = defineStore('onboarding', () => {
   const currentPage = ref(1);
   const currentProgress = ref(1);
   const isLoading = ref(false);
   const jobPositions = ref([]);
+  const jobPositionSkills = ref([]);
 
   const getJobPositions = async () => {
     isLoading.value = true;
     await useApiFetch('/sanctum/csrf-cookie');
     const { data } = await useApiFetch('/api/job-positions');
+
+    isLoading.value = false;
+
     jobPositions.value = data.value.jobPositions;
+  };
+
+  const setJobPositionSkills = async (skills) => {
+    jobPositionSkills.value = skills;
   };
 
   const submitPersonalInformation = async (info, applicantId) => {
@@ -57,6 +64,20 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     return submitWorkExperienceResponse;
   };
 
+  const submitSkills = async (info, applicantId) => {
+    isLoading.value = true;
+    await useApiFetch('/sanctum/csrf-cookie');
+
+    const submitSkillsResponse = await useApiFetch(`/api/submit-skills/${applicantId}`, {
+      method: 'POST',
+      body: info,
+    });
+
+    isLoading.value = false;
+
+    return submitSkillsResponse;
+  };
+
   const updateCurrentPage = (newPage) => {
     currentPage.value = newPage;
   }
@@ -65,5 +86,5 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     currentProgress.value = progress;
   }
 
-  return { currentPage, isLoading, currentProgress, jobPositions, getJobPositions, submitPersonalInformation, submitEducationalBackground, submitWorkExperience, updateCurrentPage, checkCurrentProgress };
+  return { currentPage, isLoading, currentProgress, jobPositions, jobPositionSkills, getJobPositions, setJobPositionSkills, submitPersonalInformation, submitEducationalBackground, submitWorkExperience, submitSkills, updateCurrentPage, checkCurrentProgress };
 });

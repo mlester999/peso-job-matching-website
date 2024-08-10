@@ -16,29 +16,32 @@ import {
 const auth = useAuthStore();
 const onboarding = useOnboardingStore();
 
-onMounted(() => {
+onMounted(async () => {
     auth.fetchUser();
     onboarding.getJobPositions();
 })
 
 const form = ref(
     {
-        jobPositionId: "",
+        jobPositionId: JSON.parse(auth.user.applicant.skills)?.jobPositionId ?? "",
+        jobPositionTitle: JSON.parse(auth.user.applicant.skills)?.jobPositionTitle ?? "",
+        jobPositionSkills: JSON.parse(auth.user.applicant.skills)?.jobPositionSkills ?? "",
         jobPositionQuery: '',
-        skills: []
+        skills: JSON.parse(auth.user.applicant.skills)?.skills ?? []
     }
 )
 
-const errors = ref([
+const errors = ref(
     {
         jobPositionId: '',
+        jobPositionTitle: '',
+        jobPositionSkills: '',
         jobPositionQuery: '',
-        skills: []
+        skills: ''
     }
-]);
-
-const selectedJobPositiondId = ref();
-const selectedJobPositionSkills = ref([]);
+);
+const selectedJobPositionTitle = ref(JSON.parse(auth.user.applicant.skills)?.jobPositionTitle ?? '');
+const selectedJobPositionSkills = ref(JSON.parse(auth.user.applicant.skills)?.jobPositionSkills ?? []);
 
 const addSkill = (val) => {
     form.value.skills.push(val);
@@ -52,29 +55,25 @@ const removeSkill = (title) => {
 }
 
 const handleSubmit = async () => {
-    const { error } = await onboarding.submitSkillsAndProfession(form.value, auth.user.applicant.id);
+    const { error } = await onboarding.submitSkills(form.value, auth.user.applicant.id);
 
     if (error.value?.data?.error) {
         if (typeof error.value.data.error !== 'string') {
-            errors.value.forEach((err, index) => {
-                if (error.value.data.error[`${index}.companyName`]) {
-                    errors.value[index].companyName = error.value.data.error[`${index}.companyName`][0];
-                } else {
-                    errors.value[index].companyName = '';
-                }
+            if (error.value.data.error.jobPositionTitle) {
+                errors.value.jobPositionTitle = error.value.data.error.jobPositionTitle[0];
+            } else {
+                errors.value.jobPositionTitle = '';
+            }
 
-                if (error.value.data.error[`${index}.companyAddress`]) {
-                    errors.value[index].companyAddress = error.value.data.error[`${index}.companyAddress`][0];
-                } else {
-                    errors.value[index].companyAddress = '';
-                }
-            })
+            if (error.value.data.error.skills) {
+                errors.value.skills = error.value.data.error.skills[0];
+            } else {
+                errors.value.skills = '';
+            }
         }
     } else {
-        errors.value.forEach((error, index) => {
-            errors.value[index].jobPositionId = '';
-            errors.value[index].skills = [];
-        })
+        errors.value.jobPositionTitle = '';
+        errors.value.skills = [];
         onboarding.updateCurrentPage(5);
         onboarding.checkCurrentProgress(5);
     }
@@ -89,12 +88,13 @@ const filteredSkills = (query) =>
         )
 
 watch(
-    selectedJobPositiondId,
+    selectedJobPositionTitle,
     (value) => {
-        form.jobPositionId = value;
         const jobPosition = onboarding.jobPositions.find((job) => job.title == value)
+        form.value.jobPositionTitle = jobPosition.title;
+        form.value.jobPositionId = jobPosition.id;
+        form.value.jobPositionSkills = JSON.parse(jobPosition.skills);
         selectedJobPositionSkills.value = JSON.parse(jobPosition.skills)
-        console.log('selectedJobPositionSkills: ', selectedJobPositionSkills.value);
     }
 );
 
@@ -108,7 +108,7 @@ watch(
 
                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 pb-12">
                     <div class="sm:col-span-6">
-                        <Combobox as="div" class="max-w-lg" v-model="selectedJobPositiondId"
+                        <Combobox as="div" class="max-w-lg" v-model="selectedJobPositionTitle"
                             @update:modelValue="form.jobPositionQuery = ''">
                             <ComboboxLabel class="block text-sm font-medium leading-6 text-gray-900">Search for Job
                                 Title
@@ -143,8 +143,8 @@ watch(
                                 </ComboboxOptions>
                             </div>
                         </Combobox>
-                        <p v-if="errors.jobPositionId" class="text-red-600 text-sm mt-1">{{
-                            errors.jobPositionId }}</p>
+                        <p v-if="errors.jobPositionTitle" class="text-red-600 text-sm mt-1">{{
+                            errors.jobPositionTitle }}</p>
                     </div>
 
                     <div v-if="selectedJobPositionSkills && selectedJobPositionSkills.length > 0"
@@ -158,6 +158,12 @@ watch(
                             {{ errors.skills }}
                         </p>
 
+                    </div>
+
+                    <div v-if="selectedJobPositionSkills && selectedJobPositionSkills.length > 0"
+                        class="px-4 sm:px-0 md:col-span-3">
+                        <h2 class="block text-sm font-medium leading-6 text-gray-900 pb-2">Selected Skills: </h2>
+                        <BaseTextList :data="form.skills" title="Skills" />
                     </div>
                 </div>
 

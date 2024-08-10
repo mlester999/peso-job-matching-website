@@ -1,19 +1,20 @@
 import { useAuthStore } from '@/store/useAuthStore';
-// import { useMainPortalStore } from '@/store/useMainPortalStore';
+import { useOnboardingStore } from '~/store/useOnboardingStore';
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
   if (process.client) {
     const store = useAuthStore();
-    // const portal = useMainPortalStore();
+    const onboarding = useOnboardingStore();
 
     await store.fetchUser();
 
     if (store.user) {
+      await onboarding.getJobPositions();
+
       if (to.path === '/portal') {
         if (store.user.applicant.applications.length === 0) {
             return navigateTo('/onboarding');
         }
-        // await portal.getAllJobPositions();
       }
 
       if (to.path === '/' || to.path === '/login' || to.path === '/signup') {
