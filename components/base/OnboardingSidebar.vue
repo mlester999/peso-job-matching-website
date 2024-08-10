@@ -8,20 +8,24 @@ const onboarding = useOnboardingStore();
 
 onBeforeMount(() => {
     if (auth.user.applicant.education) {
-        if (auth.user.applicant.workExperience) {
+        if (auth.user.applicant.work_experience) {
             if (auth.user.applicant.skills) {
-                onboarding.checkCurrentProgress(4);
-            } else {
+                onboarding.updateCurrentPage(5);
                 onboarding.checkCurrentProgress(5);
+            } else {
+                onboarding.updateCurrentPage(4);
+                onboarding.checkCurrentProgress(4);
             }
         } else {
+            onboarding.updateCurrentPage(3);
             onboarding.checkCurrentProgress(3);
         }
     } else {
         if (auth.user.applicant.zip_code) {
-            console.log('auth.user.applicant: ', auth.user.applicant);
+            onboarding.updateCurrentPage(2);
             onboarding.checkCurrentProgress(2);
         } else {
+            onboarding.updateCurrentPage(1);
             onboarding.checkCurrentProgress(1);
         }
     }
@@ -46,7 +50,7 @@ const steps = [
                 <li v-for="(step, stepIdx) in steps" :key="step.name"
                     :class="[stepIdx !== steps.length - 1 ? 'pb-10' : '', 'relative']">
                     <template v-if="onboarding.currentProgress > step.page">
-                        <div v-if="stepIdx !== steps.length - 1 && onboarding.currentPage !== step.page"
+                        <div v-if="stepIdx !== steps.length - 1"
                             class="absolute left-4 top-4 -ml-px mt-0.5 h-full w-0.5 bg-indigo-600" aria-hidden="true" />
                         <div v-else class="absolute left-4 top-4 -ml-px mt-0.5 h-full w-0.5 bg-gray-300"
                             aria-hidden="true" />

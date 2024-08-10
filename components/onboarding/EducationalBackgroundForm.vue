@@ -83,8 +83,6 @@ const removeField = (index) => {
 const handleSubmit = async () => {
     const { error } = await onboarding.submitEducationalBackground(form.value, auth.user.applicant.id);
 
-    console.log('error: ', error.value?.data?.error);
-    console.log('typeof error: ', typeof error.value?.data?.error);
     if (error.value?.data?.error) {
         if (typeof error.value.data.error !== 'string') {
             errors.value.forEach((err, index) => {
@@ -135,6 +133,7 @@ const handleSubmit = async () => {
             errors.value[index].endDate = '';
         })
         onboarding.updateCurrentPage(3);
+        onboarding.checkCurrentProgress(3);
     }
 };
 
@@ -212,7 +211,8 @@ const filteredCourse = (query) =>
                                 <ComboboxInput
                                     class="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                     @change="field.educationalLevelQuery = $event.target.value"
-                                    @blur="field.educationalLevelQuery = ''" :display-value="(level) => level" />
+                                    @blur="field.educationalLevelQuery = ''" :display-value="(level) => level"
+                                    placeholder="Select Educational Level" />
                                 <ComboboxButton
                                     class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
                                     <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -250,7 +250,7 @@ const filteredCourse = (query) =>
                                 <ComboboxInput
                                     class="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                     @change="field.levelQuery = $event.target.value" @blur="field.levelQuery = ''"
-                                    :display-value="(level) => level" />
+                                    :display-value="(level) => level" placeholder="Select Level" />
                                 <ComboboxButton
                                     class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
                                     <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -288,7 +288,7 @@ const filteredCourse = (query) =>
                                 <ComboboxInput
                                     class="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                     @change="field.courseQuery = $event.target.value" @blur="field.courseQuery = ''"
-                                    :display-value="(course) => course" />
+                                    :display-value="(course) => course" placeholder="Select Course" />
                                 <ComboboxButton
                                     class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
                                     <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
