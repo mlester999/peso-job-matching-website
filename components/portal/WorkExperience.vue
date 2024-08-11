@@ -3,5 +3,5 @@
 </script>
 
 <template>
-    <div>Hello Work Experience!</div>
+    <OnboardingWorkExperienceForm :isFromDashboard="true" />
 </template>

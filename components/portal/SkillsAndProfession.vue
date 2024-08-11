@@ -3,5 +3,5 @@
 </script>
 
 <template>
-    <div>Hello Skills and Profession!</div>
+    <OnboardingSkillsAndProfessionForm :isFromDashboard="true" />
 </template>

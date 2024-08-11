@@ -3,5 +3,5 @@
 </script>
 
 <template>
-    <div>Hello Educational Background!</div>
+    <OnboardingEducationalBackgroundForm :isFromDashboard="true" />
 </template>

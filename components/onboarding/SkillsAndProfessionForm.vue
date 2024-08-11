@@ -11,6 +11,12 @@ import {
     ComboboxOption,
     ComboboxOptions,
 } from '@headlessui/vue'
+import { toast } from 'vue3-toastify';
+
+
+const props = defineProps({
+    isFromDashboard: Boolean
+})
 
 const auth = useAuthStore();
 const onboarding = useOnboardingStore();
@@ -19,7 +25,7 @@ onMounted(() => {
     auth.fetchUser();
     onboarding.getJobPositions();
 })
-console.log('auth.user.applicant: ', auth.user.applicant);
+
 const form = ref(
     {
         jobPositionId: JSON.parse(auth.user.applicant.skills)?.jobPositionId ?? "",
@@ -73,8 +79,13 @@ const handleSubmit = async () => {
     } else {
         errors.value.jobPositionTitle = '';
         errors.value.skills = [];
-        onboarding.updateCurrentPage(5);
-        onboarding.checkCurrentProgress(5);
+
+        if (!props.isFromDashboard) {
+            onboarding.updateCurrentPage(5);
+            onboarding.checkCurrentProgress(5);
+        } else {
+            toast.success('Updated info successfully');
+        }
     }
 };
 
@@ -170,8 +181,14 @@ watch(
         </div>
 
         <div class="mt-6 flex items-center justify-end gap-x-6">
-            <button type="submit"
-                class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Next</button>
+            <button :disabled="onboarding.isLoading" type="submit"
+                class="rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                :class="[
+                    onboarding.isLoading
+                        ? 'bg-gradient-to-r from-[#85a5ff] to-[#4b8dff] hover:shadow-none'
+                        : 'bg-gradient-to-r from-[#468ef9] to-[#0c66ee]',
+                ]">{{ onboarding.isLoading ? 'Loading...' : props.isFromDashboard
+                    ? 'Submit' : 'Next' }}</button>
         </div>
     </form>
 </template>

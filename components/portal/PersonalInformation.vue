@@ -1,7 +1,6 @@
 <script setup>
-
 </script>
 
 <template>
-    <div>Hello Personal Information!</div>
+    <OnboardingPersonalInformationForm :isFromDashboard="true" />
 </template>

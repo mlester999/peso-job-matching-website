@@ -2,6 +2,11 @@
 import { ref, reactive } from 'vue';
 import { useAuthStore } from '~/store/useAuthStore';
 import { useOnboardingStore } from '~/store/useOnboardingStore';
+import { toast } from 'vue3-toastify';
+
+const props = defineProps({
+    isFromDashboard: Boolean
+})
 
 const auth = useAuthStore();
 const onboarding = useOnboardingStore();
@@ -145,7 +150,11 @@ const handleSubmit = async () => {
         errors.password = '';
         errors.password_confirmation = '';
 
-        onboarding.updateCurrentPage(2);
+        if (!props.isFromDashboard) {
+            onboarding.updateCurrentPage(2);
+        } else {
+            toast.success('Updated info successfully');
+        }
     }
 };
 </script>
@@ -234,8 +243,14 @@ const handleSubmit = async () => {
         </div>
 
         <div class="mt-6 flex items-center justify-end gap-x-6">
-            <button type="submit"
-                class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Next</button>
+            <button :disabled="onboarding.isLoading" type="submit"
+                class="rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                :class="[
+                    onboarding.isLoading
+                        ? 'bg-gradient-to-r from-[#85a5ff] to-[#4b8dff] hover:shadow-none'
+                        : 'bg-gradient-to-r from-[#468ef9] to-[#0c66ee]',
+                ]">{{ onboarding.isLoading ? 'Loading...' : props.isFromDashboard
+                    ? 'Submit' : 'Next' }}</button>
         </div>
     </form>
 </template>
