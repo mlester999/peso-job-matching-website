@@ -3,5 +3,5 @@
 </script>
 
 <template>
-    <div>Hello</div>
+    <div>Hello Skills and Profession!</div>
 </template>

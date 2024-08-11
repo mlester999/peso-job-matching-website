@@ -9,11 +9,15 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     await store.fetchUser();
 
     if (store.user) {
-      await onboarding.getJobPositions();
-
       if (to.path === '/portal') {
         if (store.user.applicant.applications.length === 0) {
             return navigateTo('/onboarding');
+        }
+      }
+
+      if (to.path === '/onboarding') {
+        if (store.user.applicant.applications.length > 0) {
+            return navigateTo('/portal');
         }
       }
 

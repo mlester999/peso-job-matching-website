@@ -78,6 +78,19 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     return submitSkillsResponse;
   };
 
+  const confirmOnboarding = async (applicantId) => {
+    isLoading.value = true;
+    await useApiFetch('/sanctum/csrf-cookie');
+
+    await useApiFetch(`/api/confirm-onboarding/${applicantId}`, {
+      method: 'POST',
+    });
+
+    isLoading.value = false;
+
+    return navigateTo('/portal');
+  };
+
   const updateCurrentPage = (newPage) => {
     currentPage.value = newPage;
   }
@@ -86,5 +99,5 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     currentProgress.value = progress;
   }
 
-  return { currentPage, isLoading, currentProgress, jobPositions, jobPositionSkills, getJobPositions, setJobPositionSkills, submitPersonalInformation, submitEducationalBackground, submitWorkExperience, submitSkills, updateCurrentPage, checkCurrentProgress };
+  return { currentPage, isLoading, currentProgress, jobPositions, jobPositionSkills, getJobPositions, setJobPositionSkills, submitPersonalInformation, submitEducationalBackground, submitWorkExperience, submitSkills, confirmOnboarding, updateCurrentPage, checkCurrentProgress };
 });

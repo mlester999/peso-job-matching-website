@@ -1,101 +1,216 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
+import {
+    Dialog,
+    DialogPanel,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuItems,
+    TransitionChild,
+    TransitionRoot,
+} from '@headlessui/vue'
+import {
+    Bars3Icon,
+    BellIcon,
+    CalendarIcon,
+    ChartPieIcon,
+    Cog6ToothIcon,
+    DocumentDuplicateIcon,
+    FolderIcon,
+    HomeIcon,
+    UsersIcon,
+    XMarkIcon,
+    AcademicCapIcon,
+    BriefcaseIcon,
+    PrinterIcon
+} from '@heroicons/vue/24/outline'
+import {
+    UserIcon
+} from '@heroicons/vue/24/solid'
+import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 import { useAuthStore } from '@/store/useAuthStore';
 
 const store = useAuthStore();
 
-const settingsModalVisibility = ref(false);
-
-// onClickOutside(
-//     settingsModalVisibility,
-//     (event) => (settingsModalVisibility.value = false)
-// );
+const route = useRoute();
 
 const handleLogout = async () => {
     await store.logout();
 };
 
-const handleSettingsModal = () => {
-    settingsModalVisibility.value = !settingsModalVisibility.value;
-};
+const navigation = [
+    { name: 'Dashboard', href: '/portal', icon: HomeIcon },
+    { name: 'Personal Information', href: '/portal/personal-information', icon: UsersIcon },
+    { name: 'Educational Background', href: '/portal/educational-background', icon: AcademicCapIcon },
+    { name: 'Work Experience', href: '/portal/work-experience', icon: BriefcaseIcon },
+    { name: 'Skills and Profession', href: '/portal/skills-and-profession', icon: DocumentDuplicateIcon },
+    { name: 'View Curriculum Vitae', href: '/portal/view-curriculum-vitae', icon: PrinterIcon },
+]
+const userNavigation = [
+    { name: 'My profile', href: '/portal/my-profile', type: 'link' },
+]
+
+const sidebarOpen = ref(false)
 </script>
 
 <template>
-    <!-- Main navigation container -->
+    <div>
+        <TransitionRoot as="template" :show="sidebarOpen">
+            <Dialog class="relative z-50 lg:hidden" @close="sidebarOpen = false">
+                <TransitionChild as="template" enter="transition-opacity ease-linear duration-300"
+                    enter-from="opacity-0" enter-to="opacity-100" leave="transition-opacity ease-linear duration-300"
+                    leave-from="opacity-100" leave-to="opacity-0">
+                    <div class="fixed inset-0 bg-gray-900/80" />
+                </TransitionChild>
 
-    <section class="relative mx-auto">
-        <!-- navbar -->
-        <nav class="flex justify-between text-gray-600">
-            <div class="px-5 xl:px-12 py-2 flex w-full items-center">
-                <a class="text-3xl font-bold font-heading mr-auto" href="/portal">
-                    <img src="/public/peso_icon_no_bg.png" class="w-16 xl:w-20" alt="FAMSI Logo" />
-                </a>
-                <!-- Header Icons -->
-                <div class="hidden relative xl:flex space-x-5 items-center">
-                    <!-- Sign In / Register      -->
-                    <button @click="handleSettingsModal" class="flex items-center hover:text-gray-800" href="#">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-800" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </button>
+                <div class="fixed inset-0 flex">
+                    <TransitionChild as="template" enter="transition ease-in-out duration-300 transform"
+                        enter-from="-translate-x-full" enter-to="translate-x-0"
+                        leave="transition ease-in-out duration-300 transform" leave-from="translate-x-0"
+                        leave-to="-translate-x-full">
+                        <DialogPanel class="relative mr-16 flex w-full max-w-xs flex-1">
+                            <TransitionChild as="template" enter="ease-in-out duration-300" enter-from="opacity-0"
+                                enter-to="opacity-100" leave="ease-in-out duration-300" leave-from="opacity-100"
+                                leave-to="opacity-0">
+                                <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+                                    <button type="button" class="-m-2.5 p-2.5" @click="sidebarOpen = false">
+                                        <span class="sr-only">Close sidebar</span>
+                                        <XMarkIcon class="h-6 w-6 text-white" aria-hidden="true" />
+                                    </button>
+                                </div>
+                            </TransitionChild>
+                            <!-- Sidebar component, swap this element with another sidebar if you like -->
+                            <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-blue-600 px-6 pb-4">
+                                <div class="flex h-16 shrink-0 items-center">
+                                    <img class="h-8 w-auto" src="/public/peso_icon_no_bg.png" alt="PESO Logo" />
+                                </div>
+                                <nav class="flex flex-1 flex-col">
+                                    <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                                        <li>
+                                            <ul role="list" class="-mx-2 space-y-1">
+                                                <li v-for="item in navigation" :key="item.name">
+                                                    <NuxtLink :href="item.href"
+                                                        :class="[item.href === route.path ? 'bg-blue-700 text-white' : 'text-blue-200 hover:text-white hover:bg-blue-700', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
+                                                        <component :is="item.icon"
+                                                            :class="[item.href === route.path ? 'text-white' : 'text-blue-200 group-hover:text-white', 'h-6 w-6 shrink-0']"
+                                                            aria-hidden="true" />
+                                                        {{ item.name }}
+                                                    </NuxtLink>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </DialogPanel>
+                    </TransitionChild>
+                </div>
+            </Dialog>
+        </TransitionRoot>
 
-                    <div v-show="settingsModalVisibility"
-                        class="absolute right-0 w-48 z-50 bg-white rounded-md shadow-lg top-8 ring-1 ring-black ring-opacity-5 dark:bg-dark focus:outline-none"
-                        tabindex="-1" role="menu" aria-orientation="vertical" aria-label="User menu">
-                        <button
-                            class="block px-4 w-full py-3 text-sm text-gray-700 text-left transition-colors hover:bg-gray-100 dark:text-light dark:hover:bg-blue-600">
-                            Your Profile
+        <!-- Static sidebar for desktop -->
+        <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+            <!-- Sidebar component, swap this element with another sidebar if you like -->
+            <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-blue-600 px-6 pb-4">
+                <div class="flex h-16 shrink-0 items-center">
+                    <img class="h-10 w-auto" src="/public/peso_icon_no_bg.png" alt="PESO Logo" />
+                    <h1 class="text-white text-2xl font-semibold ml-4">PESO Cabuyao</h1>
+                </div>
+                <nav class="flex flex-1 flex-col">
+                    <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                        <li>
+                            <ul role="list" class="-mx-2 space-y-4">
+                                <li v-for="item in navigation" :key="item.name">
+                                    <NuxtLink :href="item.href"
+                                        :class="[item.href === route.path ? 'bg-blue-700 text-white' : 'text-blue-200 hover:text-white hover:bg-blue-700', 'group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold']">
+                                        <component :is="item.icon"
+                                            :class="[item.href === route.path ? 'text-white' : 'text-blue-200 group-hover:text-white', 'h-6 w-6 shrink-0']"
+                                            aria-hidden="true" />
+                                        {{ item.name }}
+                                    </NuxtLink>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <div class="lg:pl-72">
+            <div
+                class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+                <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" @click="sidebarOpen = true">
+                    <span class="sr-only">Open sidebar</span>
+                    <Bars3Icon class="h-6 w-6" aria-hidden="true" />
+                </button>
+
+                <!-- Separator -->
+                <div class="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true" />
+
+                <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+                    <form class="relative flex flex-1" action="#" method="GET">
+                        <label for="search-field" class="sr-only">Search</label>
+                        <MagnifyingGlassIcon
+                            class="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
+                            aria-hidden="true" />
+                        <input id="search-field"
+                            class="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
+                            placeholder="Search..." type="search" name="search" />
+                    </form>
+                    <div class="flex items-center gap-x-4 lg:gap-x-6">
+                        <button type="button" class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+                            <span class="sr-only">View notifications</span>
+                            <BellIcon class="h-6 w-6" aria-hidden="true" />
                         </button>
-                        <button
-                            class="block px-4 w-full py-3 text-sm text-gray-700 text-left transition-colors hover:bg-gray-100 dark:text-light dark:hover:bg-blue-600">
-                            Settings
-                        </button>
-                        <form @submit.prevent="handleLogout">
-                            <button type="submit"
-                                class="block px-4 rounded-md w-full py-3 text-sm text-red-600 text-left transition-colors hover:bg-gray-100 dark:text-light dark:hover:bg-blue-600">
-                                Logout
-                            </button>
-                        </form>
+
+                        <!-- Separator -->
+                        <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true" />
+
+                        <!-- Profile dropdown -->
+                        <Menu as="div" class="relative">
+                            <MenuButton class="-m-1.5 flex items-center p-1.5">
+                                <span class="sr-only">Open user menu</span>
+                                <UserIcon class="h-6 w-6 text-white rounded-full bg-gray-500 p-0.5"
+                                    aria-hidden="true" />
+                                <span class="hidden lg:flex lg:items-center">
+                                    <span class="ml-4 text-sm font-semibold leading-6 text-gray-900"
+                                        aria-hidden="true">{{ store.user.applicant.first_name }} {{
+                                            store.user.applicant.last_name }}</span>
+                                    <ChevronDownIcon class="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
+                                </span>
+                            </MenuButton>
+                            <transition enter-active-class="transition ease-out duration-100"
+                                enter-from-class="transform opacity-0 scale-95"
+                                enter-to-class="transform opacity-100 scale-100"
+                                leave-active-class="transition ease-in duration-75"
+                                leave-from-class="transform opacity-100 scale-100"
+                                leave-to-class="transform opacity-0 scale-95">
+                                <MenuItems
+                                    class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+                                    <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
+                                    <NuxtLink :href="item.href"
+                                        :class="[active ? 'bg-gray-50' : '', 'block px-3 py-1 text-sm leading-6 text-gray-900']">
+                                        {{
+                                            item.name }}</NuxtLink>
+                                    </MenuItem>
+                                    <MenuItem>
+                                    <button @click="handleLogout" type="button"
+                                        class='block px-3 py-1 text-sm leading-6 text-red-600 hover:bg-gray-50 w-full text-left'>
+                                        Log Out</button>
+                                    </MenuItem>
+                                </MenuItems>
+                            </transition>
+                        </Menu>
                     </div>
                 </div>
             </div>
-            <!-- Responsive navbar -->
-            <a class="xl:hidden flex mr-6 items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-800" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                <span class="flex absolute -mt-5 ml-4">
-                    <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-pink-500">
-                    </span>
-                </span>
-            </a>
-            <a class="navbar-burger self-center mr-12 xl:hidden" href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-800" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </a>
-        </nav>
-    </section>
+
+            <main class="py-10">
+                <div class="px-4 sm:px-6 lg:px-8">
+                    <slot></slot>
+                </div>
+            </main>
+        </div>
+    </div>
 </template>
-<script>
-export default {
-    name: 'BaseNavbar',
-    data() {
-        return {
-            open: false,
-            dropdownNavbar: false,
-        };
-    },
-    methods: {
-        dropdownToggler() {
-            this.dropdownNavbar = !this.dropdownNavbar;
-        },
-    },
-};
-</script>

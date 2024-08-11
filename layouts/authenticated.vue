@@ -4,11 +4,10 @@
 
         <div class="min-h-screen font-sans antialiased relative bg-gray-100">
             <div class="relative">
-                <BaseAuthenticatedNavbar />
-
-                <main class="text-neutral-800">
+                <BaseAuthenticatedNavbar>
                     <slot />
-                </main>
+                </BaseAuthenticatedNavbar>
+
             </div>
         </div>
     </client-only>

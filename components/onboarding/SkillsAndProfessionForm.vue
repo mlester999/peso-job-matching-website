@@ -2,7 +2,6 @@
 import { ref, watch } from 'vue';
 import { useAuthStore } from '~/store/useAuthStore';
 import { useOnboardingStore } from '~/store/useOnboardingStore';
-import { employmentTypes } from '~/utils/employmentTypes';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
 import {
     Combobox,
@@ -16,11 +15,11 @@ import {
 const auth = useAuthStore();
 const onboarding = useOnboardingStore();
 
-onMounted(async () => {
+onMounted(() => {
     auth.fetchUser();
     onboarding.getJobPositions();
 })
-
+console.log('auth.user.applicant: ', auth.user.applicant);
 const form = ref(
     {
         jobPositionId: JSON.parse(auth.user.applicant.skills)?.jobPositionId ?? "",
