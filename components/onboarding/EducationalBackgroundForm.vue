@@ -44,7 +44,7 @@ const form = ref(JSON.parse(auth.user.applicant.education) ?? [
 
 // Computed property that generates the array based on education length
 const errorsWithData = computed(() => {
-    return Array.from({ length: JSON.parse(auth.user.applicant.education).length }, () => ({
+    return Array.from({ length: JSON.parse(auth.user.applicant.education)?.length ?? 0 }, () => ({
         schoolName: '',
         educationalLevel: '',
         educationalLevelQuery: '',
@@ -170,6 +170,7 @@ const checkEducationalLevel = (index) => {
         '3rd Year College',
         '4th Year College',
         '5th Year College',
+        'College Graduate',
         'Post Graduate'
     ];
 

@@ -44,7 +44,7 @@ const form = ref(JSON.parse(auth.user.applicant.work_experience) ?? [
 
 // Computed property that generates the array based on education length
 const errorsWithData = computed(() => {
-    return Array.from({ length: JSON.parse(auth.user.applicant.work_experience).length }, () => ({
+    return Array.from({ length: JSON.parse(auth.user.applicant.work_experience)?.length ?? 0 }, () => ({
         companyName: '',
         companyAddress: '',
         employmentType: '',

@@ -2,6 +2,10 @@
 import { useHead } from 'nuxt/app';
 import { onMounted, onBeforeUnmount, ref, reactive } from 'vue';
 import { useAuthStore } from '@/store/useAuthStore';
+import { usePortalStore } from '~/store/usePortalStore';
+import { toast } from 'vue3-toastify';
+
+const portal = usePortalStore();
 
 onMounted(() => {
     const nuxtDiv = document.getElementById('__nuxt');
@@ -9,6 +13,11 @@ onMounted(() => {
         nuxtDiv.classList.add('flex');
         nuxtDiv.classList.add('min-h-full');
         nuxtDiv.classList.add('flex-1');
+    }
+
+    if (portal.isUpdated) {
+        toast.info(portal.toastMessage);
+        portal.hideToastMessage();
     }
 });
 

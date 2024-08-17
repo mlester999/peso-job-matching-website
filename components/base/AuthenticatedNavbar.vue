@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import {
     Dialog,
     DialogPanel,
@@ -13,11 +13,7 @@ import {
 import {
     Bars3Icon,
     BellIcon,
-    CalendarIcon,
-    ChartPieIcon,
-    Cog6ToothIcon,
     DocumentDuplicateIcon,
-    FolderIcon,
     HomeIcon,
     UsersIcon,
     XMarkIcon,
@@ -28,16 +24,29 @@ import {
 import {
     UserIcon
 } from '@heroicons/vue/24/solid'
-import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
+import { ChevronDownIcon } from '@heroicons/vue/20/solid'
 import { useAuthStore } from '@/store/useAuthStore';
 
-const store = useAuthStore();
-
+const auth = useAuthStore();
 const route = useRoute();
 
 const handleLogout = async () => {
-    await store.logout();
+    await auth.logout();
 };
+
+const displayGreeting = computed(() => {
+    const date = new Date();
+    const hrs = date.getHours();
+    let greet;
+
+    if (hrs < 12)
+        greet = 'Good Morning';
+    else if (hrs >= 12 && hrs <= 17)
+        greet = 'Good Afternoon';
+    else if (hrs >= 17 && hrs <= 24)
+        greet = 'Good Evening';
+    return greet
+});
 
 const navigation = [
     { name: 'Dashboard', href: '/portal', icon: HomeIcon },
@@ -148,15 +157,10 @@ const sidebarOpen = ref(false)
                 <!-- Separator -->
                 <div class="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true" />
 
-                <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+                <div class="flex flex-1 items-center gap-x-4 self-stretch lg:gap-x-6">
                     <form class="relative flex flex-1" action="#" method="GET">
-                        <label for="search-field" class="sr-only">Search</label>
-                        <MagnifyingGlassIcon
-                            class="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
-                            aria-hidden="true" />
-                        <input id="search-field"
-                            class="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
-                            placeholder="Search..." type="search" name="search" />
+                        <h1 class="block h-full w-full font-semibold">Hello {{ auth.user.applicant.first_name }},
+                            {{ displayGreeting }}!</h1>
                     </form>
                     <div class="flex items-center gap-x-4 lg:gap-x-6">
                         <button type="button" class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
@@ -175,8 +179,8 @@ const sidebarOpen = ref(false)
                                     aria-hidden="true" />
                                 <span class="hidden lg:flex lg:items-center">
                                     <span class="ml-4 text-sm font-semibold leading-6 text-gray-900"
-                                        aria-hidden="true">{{ store.user.applicant.first_name }} {{
-                                            store.user.applicant.last_name }}</span>
+                                        aria-hidden="true">{{ auth.user.applicant.first_name }} {{
+                                            auth.user.applicant.last_name }}</span>
                                     <ChevronDownIcon class="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
                                 </span>
                             </MenuButton>

@@ -152,6 +152,7 @@ const handleSubmit = async () => {
 
         if (!props.isFromDashboard) {
             onboarding.updateCurrentPage(2);
+            onboarding.checkCurrentProgress(2);
         } else {
             toast.success('Updated info successfully');
         }
