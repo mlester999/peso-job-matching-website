@@ -144,6 +144,19 @@ export const useAuthStore = defineStore('auth', () => {
     return smsResponse.data?.value?.otp[0];
   };
 
+  const verifyUsingEmail = async (applicantId) => {
+    isLoading.value = true;
+    await useApiFetch('/sanctum/csrf-cookie');
+
+    const emailResponse = await useApiFetch(`/api/verify-using-email/${applicantId}`, {
+      method: 'POST'
+    });
+
+    isLoading.value = false;
+
+    return emailResponse.data?.value?.otp;
+  };
+
   const verifyContactNumber = async (applicantId) => {
     isLoading.value = true;
     await useApiFetch('/sanctum/csrf-cookie');
@@ -157,5 +170,18 @@ export const useAuthStore = defineStore('auth', () => {
     return navigateTo('/onboarding');
   };
 
-  return { user, isLoading, login, logout, register, application, verifyUsingSms, verifyContactNumber, fetchUser };
+  const verifyEmailAddress = async (applicantId) => {
+    isLoading.value = true;
+    await useApiFetch('/sanctum/csrf-cookie');
+
+    const emailAddressResponse = await useApiFetch(`/api/verify-email-address/${applicantId}`, {
+      method: 'PUT'
+    });
+
+    isLoading.value = false;
+
+    return navigateTo('/onboarding');
+  };
+
+  return { user, isLoading, login, logout, register, application, verifyUsingSms, verifyUsingEmail, verifyContactNumber, verifyEmailAddress, fetchUser };
 });
