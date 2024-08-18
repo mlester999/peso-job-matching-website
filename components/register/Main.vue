@@ -47,6 +47,7 @@ const form = ref({
     firstName: '',
     lastName: '',
     email: '',
+    contact_number: '',
     password: '',
     password_confirmation: '',
 });
@@ -55,6 +56,7 @@ const errors = reactive({
     firstName: '',
     lastName: '',
     email: '',
+    contact_number: '',
     password: '',
     password_confirmation: '',
 });
@@ -82,6 +84,12 @@ const handleRegister = async () => {
                 errors.email = '';
             }
 
+            if (error.value.data.error.contact_number) {
+                errors.contact_number = error.value.data.error.contact_number[0];
+            } else {
+                errors.contact_number = '';
+            }
+
             if (error.value.data.error.password) {
                 errors.password = error.value.data.error.password[0];
             } else {
@@ -99,6 +107,7 @@ const handleRegister = async () => {
         errors.firstName = '';
         errors.lastName = '';
         errors.email = '';
+        errors.contact_number = '';
         errors.password = '';
         errors.password_confirmation = '';
     }
@@ -128,6 +137,11 @@ const handleRegister = async () => {
                 <div>
                     <BaseInputField id="email" v-model="form.email" title="Email Address" type="email"
                         :errorMessage="errors?.email" />
+                </div>
+
+                <div>
+                    <BaseInputField id="contact_number" v-model="form.contact_number" title="Contact Number" type="text"
+                        :errorMessage="errors?.contact_number" :isContactNumber="true" />
                 </div>
 
                 <div>

@@ -237,7 +237,7 @@ const handleSubmit = async () => {
 
                     <div class="sm:col-span-2">
                         <BaseInputField id="contactNumber" title="Contact Number" v-model="form.contactNumber"
-                            type="text" :errorMessage="errors?.contactNumber" />
+                            type="text" :errorMessage="errors?.contactNumber" :isContactNumber="true" />
                     </div>
                 </div>
             </div>

@@ -93,7 +93,7 @@ export const useAuthStore = defineStore('auth', () => {
 
       user.value = data.value;
 
-      return navigateTo('/onboarding');
+      return navigateTo('/verify');
     }
 
     isLoading.value = false;
@@ -131,5 +131,31 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
-  return { user, isLoading, login, logout, register, application, fetchUser };
+  const verifyUsingSms = async (applicantId) => {
+    isLoading.value = true;
+    await useApiFetch('/sanctum/csrf-cookie');
+
+    const smsResponse = await useApiFetch(`/api/verify-using-sms/${applicantId}`, {
+      method: 'POST'
+    });
+
+    isLoading.value = false;
+
+    return smsResponse.data?.value?.otp[0];
+  };
+
+  const verifyContactNumber = async (applicantId) => {
+    isLoading.value = true;
+    await useApiFetch('/sanctum/csrf-cookie');
+
+    const contactNumberResponse = await useApiFetch(`/api/verify-contact-number/${applicantId}`, {
+      method: 'PUT'
+    });
+
+    isLoading.value = false;
+
+    return navigateTo('/onboarding');
+  };
+
+  return { user, isLoading, login, logout, register, application, verifyUsingSms, verifyContactNumber, fetchUser };
 });

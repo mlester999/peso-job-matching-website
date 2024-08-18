@@ -9,19 +9,37 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     await store.fetchUser();
 
     if (store.user) {
+      if (to.path === '/verify') {
+        if (store.user.applicant.contact_number_verified_at || store.user.email_verified_at) {
+          if (store.user.applicant.applications.length === 0) {
+            return navigateTo('/onboarding');
+          } else {
+            return navigateTo('/portal');
+          }
+        }
+      }
+
       if (to.path === '/portal') {
+        if (!store.user.applicant.contact_number_verified_at && !store.user.email_verified_at) {
+            return navigateTo('/verify');
+        }
+
         if (store.user.applicant.applications.length === 0) {
             return navigateTo('/onboarding');
         }
       }
 
       if (to.path === '/onboarding') {
+        if (!store.user.applicant.contact_number_verified_at && !store.user.email_verified_at) {
+          return navigateTo('/verify');
+          }
+
         if (store.user.applicant.applications.length > 0) {
             return navigateTo('/portal');
         }
       }
 
-      if (to.path === '/' || to.path === '/login' || to.path === '/signup') {
+      if (to.path === '/' || to.path === '/login' || to.path === '/register') {
         if (store.user.applicant.applications.length === 0) {
             return navigateTo('/onboarding');
         } else {
@@ -29,7 +47,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         }
       }
     } else {
-      if (to.path.includes('/portal') || to.path.includes('/onboarding')) {
+      if (to.path.includes('/portal') || to.path.includes('/onboarding') || to.path.includes('/verify')) {
         return navigateTo('/login');
       }
     }
