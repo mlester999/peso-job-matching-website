@@ -183,5 +183,20 @@ export const useAuthStore = defineStore('auth', () => {
     return navigateTo('/onboarding');
   };
 
-  return { user, isLoading, login, logout, register, application, verifyUsingSms, verifyUsingEmail, verifyContactNumber, verifyEmailAddress, fetchUser };
+    const sendResetPasswordLink = async (info) => {
+      isLoading.value = true;
+      await useApiFetch('/sanctum/csrf-cookie');
+  
+      const resetResponse = await useApiFetch('/api/send-reset-password-link', {
+        method: 'POST',
+        body: info,
+      });
+  
+      isLoading.value = false;
+  
+      return resetResponse;
+    };
+
+
+  return { user, isLoading, login, logout, register, application, verifyUsingSms, verifyUsingEmail, verifyContactNumber, verifyEmailAddress, sendResetPasswordLink, fetchUser };
 });

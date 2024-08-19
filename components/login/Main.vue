@@ -118,8 +118,9 @@ const handleLogin = async () => {
                             </div>
 
                             <div class="text-sm leading-6">
-                                <a href="#" class="font-semibold text-blue-600 hover:text-blue-500">Forgot
-                                    password?</a>
+                                <NuxtLink href="/forgot-password"
+                                    class="font-semibold text-blue-600 hover:text-blue-500">Forgot
+                                    password?</NuxtLink>
                             </div>
                         </div>
 
