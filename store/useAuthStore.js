@@ -5,6 +5,8 @@ import nuxtStorage from 'nuxt-storage';
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null);
   const isLoading = ref(false);
+  const errorMessage = ref('');
+  const emailForReset = ref('');
 
   const fetchUser = async () => {
     const token = nuxtStorage.localStorage.getData('Token');
@@ -23,6 +25,25 @@ export const useAuthStore = defineStore('auth', () => {
         console.error('Error fetching user data:', error);
       }
     }
+  };
+
+  const fetchResetPasswordEmail = async (token) => {
+    isLoading.value = true;
+    await useApiFetch('/sanctum/csrf-cookie');
+
+    const fetchResponse = await useApiFetch(`/api/get-email-from-token/${token}`, {
+      method: 'POST'
+    });
+    console.log('fetchResponse: ', fetchResponse);
+    if (fetchResponse?.error?.value?.data?.token) {
+      errorMessage.value = fetchResponse?.error?.value?.data?.token;
+      navigateTo('/forgot-password');
+    } else {
+      console.log(fetchResponse?.data?.value);
+      errorMessage.value = '';
+      emailForReset.value = fetchResponse?.data?.value?.data?.token;
+    }
+    return fetchResponse
   };
 
   const logout = async () => {
@@ -198,5 +219,5 @@ export const useAuthStore = defineStore('auth', () => {
     };
 
 
-  return { user, isLoading, login, logout, register, application, verifyUsingSms, verifyUsingEmail, verifyContactNumber, verifyEmailAddress, sendResetPasswordLink, fetchUser };
+  return { user, isLoading, errorMessage, emailForReset, login, logout, register, application, verifyUsingSms, verifyUsingEmail, verifyContactNumber, verifyEmailAddress, sendResetPasswordLink, fetchUser, fetchResetPasswordEmail };
 });

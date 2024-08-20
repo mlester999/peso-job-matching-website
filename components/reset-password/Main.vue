@@ -4,7 +4,18 @@ import { onMounted, onBeforeUnmount } from 'vue';
 import { ref, reactive } from 'vue';
 import { useAuthStore } from '@/store/useAuthStore';
 
+const auth = useAuthStore();
+
+const route = useRoute();
+
+
 onMounted(() => {
+    if (route.query.token) {
+        auth.fetchResetPasswordEmail(route.query.token);
+    } else {
+        navigateTo('forgot-password');
+    }
+
     const nuxtDiv = document.getElementById('__nuxt');
     if (nuxtDiv) {
         nuxtDiv.classList.add('flex');
@@ -41,7 +52,7 @@ useHead({
     }
 });
 
-const auth = useAuthStore();
+
 
 const form = ref({
     email: ''
@@ -53,7 +64,7 @@ const errors = reactive({
 
 const successMessage = ref('');
 
-const handleForgotPassword = async () => {
+const handleResetPassword = async () => {
     const { error } = await auth.sendResetPasswordLink(form.value);
     if (error.value?.data?.error) {
         if (typeof error.value.data.error !== 'string') {
@@ -75,7 +86,7 @@ const handleForgotPassword = async () => {
 <template>
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <img class="mx-auto h-20 w-auto" src="/public/peso_icon_no_bg.png" alt="Your Company" />
-        <h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Forgot your password?
+        <h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Reset password
         </h2>
         <p class="mt-6 text-center">Enter your email address and we will send you the recovery code to reset your
             password.</p>
