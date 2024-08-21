@@ -27,21 +27,20 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
-  const fetchResetPasswordEmail = async (token) => {
+  const fetchResetPasswordEmail = async (token, email) => {
     isLoading.value = true;
     await useApiFetch('/sanctum/csrf-cookie');
 
-    const fetchResponse = await useApiFetch(`/api/get-email-from-token/${token}`, {
-      method: 'POST'
+    const fetchResponse = await useApiFetch(`/api/get-email-from-token`, {
+      method: 'POST',
+      body: {token, email}
     });
-    console.log('fetchResponse: ', fetchResponse);
-    if (fetchResponse?.error?.value?.data?.token) {
-      errorMessage.value = fetchResponse?.error?.value?.data?.token;
+
+    if (fetchResponse?.error?.value?.data?.message) {
+      errorMessage.value = fetchResponse?.error?.value?.data?.message;
       navigateTo('/forgot-password');
     } else {
-      console.log(fetchResponse?.data?.value);
       errorMessage.value = '';
-      emailForReset.value = fetchResponse?.data?.value?.data?.token;
     }
     return fetchResponse
   };
@@ -218,6 +217,20 @@ export const useAuthStore = defineStore('auth', () => {
       return resetResponse;
     };
 
+    const resetPassword = async (info) => {
+      isLoading.value = true;
+      await useApiFetch('/sanctum/csrf-cookie');
+  
+      const resetResponse = await useApiFetch('/api/reset-password', {
+        method: 'POST',
+        body: info,
+      });
+  
+      isLoading.value = false;
+  
+      return resetResponse;
+    };
 
-  return { user, isLoading, errorMessage, emailForReset, login, logout, register, application, verifyUsingSms, verifyUsingEmail, verifyContactNumber, verifyEmailAddress, sendResetPasswordLink, fetchUser, fetchResetPasswordEmail };
+
+  return { user, isLoading, errorMessage, emailForReset, login, logout, register, application, verifyUsingSms, verifyUsingEmail, verifyContactNumber, verifyEmailAddress, sendResetPasswordLink, resetPassword, fetchUser, fetchResetPasswordEmail };
 });

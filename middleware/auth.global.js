@@ -51,8 +51,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         return navigateTo('/login');
       }
 
-      if (to.path.includes('/reset-password') && !to.query.token) {
-        console.log('wow');
+      if (to.path.includes('/reset-password') && !to.query.token && !to.query.email) {
         return navigateTo('/forgot-password');
       }
     }

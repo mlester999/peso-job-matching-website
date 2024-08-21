@@ -10,8 +10,8 @@ const route = useRoute();
 
 
 onMounted(() => {
-    if (route.query.token) {
-        auth.fetchResetPasswordEmail(route.query.token);
+    if (route.query.token && route.query.email) {
+        auth.fetchResetPasswordEmail(route.query.token, route.query.email);
     } else {
         navigateTo('forgot-password');
     }
@@ -52,20 +52,24 @@ useHead({
     }
 });
 
-
-
 const form = ref({
-    email: ''
+    email: route.query.email,
+    token: route.query.token,
+    newPassword: '',
+    confirmNewPassword: '',
 });
 
 const errors = reactive({
-    email: ''
+    email: '',
+    password: '',
+    confirmNewPassword: '',
 });
 
-const successMessage = ref('');
+const invalidTokenErrorMessage = ref('');
 
 const handleResetPassword = async () => {
-    const { error } = await auth.sendResetPasswordLink(form.value);
+    const { error } = await auth.resetPassword(form.value);
+
     if (error.value?.data?.error) {
         if (typeof error.value.data.error !== 'string') {
             if (error.value.data.error.email) {
@@ -73,12 +77,31 @@ const handleResetPassword = async () => {
             } else {
                 errors.email = '';
             }
+
+            if (error.value.data.error.password) {
+                errors.password = error.value.data.error.password[0];
+            } else {
+                errors.password = '';
+            }
+
+            if (error.value.data.error.confirmNewPassword) {
+                errors.confirmNewPassword = error.value.data.error.confirmNewPassword[0];
+            } else {
+                errors.confirmNewPassword = '';
+            }
         } else {
             errors.email = error.value.data.error;
         }
     } else {
         errors.email = '';
-        successMessage.value = 'An email has been sent to your email address. Follow the instructions on how to reset your password.'
+        errors.password = '';
+        errors.confirmNewPassword = '';
+    }
+
+    if (error.value?.data?.error || error.value?.data?.message) {
+        invalidTokenErrorMessage.value = error.value?.data?.message;
+    } else {
+        navigateTo('/login');
     }
 };
 </script>
@@ -88,17 +111,35 @@ const handleResetPassword = async () => {
         <img class="mx-auto h-20 w-auto" src="/public/peso_icon_no_bg.png" alt="Your Company" />
         <h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Reset password
         </h2>
-        <p class="mt-6 text-center">Enter your email address and we will send you the recovery code to reset your
-            password.</p>
+        <p class="mt-6 text-center">Please enter your new password.</p>
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
-        <div class="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
-            <form class="space-y-6" @submit.prevent="handleForgotPassword">
+        <div class="bg-white px-6 pb-12 pt-6 shadow sm:rounded-lg sm:px-12">
+            <div v-if="invalidTokenErrorMessage" class="rounded-md bg-red-50 p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800">{{ invalidTokenErrorMessage }}</h3>
+                    </div>
+                </div>
+            </div>
+            <form class="space-y-6 mt-6" @submit.prevent="handleResetPassword">
                 <div>
                     <BaseInputField id="email" v-model="form.email" title="Email Address" type="email"
-                        :errorMessage="errors?.email" />
-                    <p class="text-green-600 text-sm mt-1" v-if="successMessage">{{ successMessage }}</p>
+                        :errorMessage="errors?.email" disabled />
+                </div>
+
+                <div>
+                    <BaseInputField id="password" v-model="form.password" title="New Password" type="password"
+                        :errorMessage="errors?.password" />
+                </div>
+
+                <div>
+                    <BaseInputField id="confirmNewPassword" v-model="form.confirmNewPassword"
+                        title="Confirm New Password" type="password" :errorMessage="errors?.confirmNewPassword" />
                 </div>
 
                 <div>

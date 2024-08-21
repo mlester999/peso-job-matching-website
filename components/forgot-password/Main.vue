@@ -1,4 +1,5 @@
 <script setup>
+import { XCircleIcon } from '@heroicons/vue/20/solid'
 import { useHead } from 'nuxt/app';
 import { onMounted, onBeforeUnmount } from 'vue';
 import { ref, reactive } from 'vue';
@@ -42,7 +43,7 @@ useHead({
 });
 
 const auth = useAuthStore();
-
+console.log('auth: ', auth);
 const form = ref({
     email: ''
 });
@@ -82,8 +83,18 @@ const handleForgotPassword = async () => {
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
-        <div class="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
-            <form class="space-y-6" @submit.prevent="handleForgotPassword">
+        <div class="bg-white px-6 pt-6 pb-12 shadow sm:rounded-lg sm:px-12">
+            <div v-if="auth.errorMessage" class="rounded-md bg-red-50 p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800">{{ auth.errorMessage }}</h3>
+                    </div>
+                </div>
+            </div>
+            <form class="space-y-6 mt-6" @submit.prevent="handleForgotPassword">
                 <div>
                     <BaseInputField id="email" v-model="form.email" title="Email Address" type="email"
                         :errorMessage="errors?.email" />
