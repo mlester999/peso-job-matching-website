@@ -130,7 +130,7 @@ const logoutOtherSessions = async () => {
         <h1 class="sr-only">Account Settings</h1>
 
         <!-- Settings forms -->
-        <div class="divide-y divide-gray/5">
+        <div class="divide-y divide-gray-900/20">
             <div class="grid grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
                 <div>
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>

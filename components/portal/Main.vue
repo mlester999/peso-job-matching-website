@@ -29,7 +29,7 @@ const stats = [
         <BaseBanner v-if="auth.user.applicant.applications[0].status === 0"
             :title="`Welcome, ${auth.user.applicant.first_name}`"
             description="You are now successfully a registered applicant. Your CV is under review, and in the meantime, you can update your profile if needed. Thank you and good luck." />
-        <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <dl class="my-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             <div v-for="item in stats" :key="item.id"
                 class="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
                 <dt>
@@ -49,5 +49,7 @@ const stats = [
                 </dd>
             </div>
         </dl>
+        <iframe class="w-full aspect-video" src="https://www.youtube.com/embed/aN-OpYShP3U" frameborder="0"
+            allowfullscreen></iframe>
     </div>
 </template>
