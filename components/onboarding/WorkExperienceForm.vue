@@ -22,13 +22,14 @@ const props = defineProps({
 
 
 const auth = useAuthStore();
+const { applications } = auth.user.applicant;
 const onboarding = useOnboardingStore();
 
 onMounted(() => {
     auth.fetchUser();
 })
 
-const form = ref(JSON.parse(auth.user.applicant.work_experience) ?? [
+const form = ref(JSON.parse(applications[applications.length - 1].work_experience) ?? [
     {
         companyName: '',
         companyAddress: '',
@@ -44,7 +45,7 @@ const form = ref(JSON.parse(auth.user.applicant.work_experience) ?? [
 
 // Computed property that generates the array based on education length
 const errorsWithData = computed(() => {
-    return Array.from({ length: JSON.parse(auth.user.applicant.work_experience)?.length ?? 0 }, () => ({
+    return Array.from({ length: JSON.parse(applications[applications.length - 1].work_experience)?.length ?? 0 }, () => ({
         companyName: '',
         companyAddress: '',
         employmentType: '',

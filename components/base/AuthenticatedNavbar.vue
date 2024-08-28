@@ -49,12 +49,11 @@ const displayGreeting = computed(() => {
 });
 
 const navigation = [
-    { name: 'Dashboard', href: '/portal', icon: HomeIcon },
     { name: 'Personal Information', href: '/portal/personal-information', icon: UsersIcon },
     { name: 'Educational Background', href: '/portal/educational-background', icon: AcademicCapIcon },
     { name: 'Work Experience', href: '/portal/work-experience', icon: BriefcaseIcon },
     { name: 'Skills and Profession', href: '/portal/skills-and-profession', icon: DocumentDuplicateIcon },
-    { name: 'View Curriculum Vitae', href: '/portal/view-curriculum-vitae', icon: PrinterIcon },
+    // { name: 'View Curriculum Vitae', href: '/portal/view-curriculum-vitae', icon: PrinterIcon },
 ]
 const userNavigation = [
     { name: 'My profile', href: '/portal/my-profile', type: 'link' },
@@ -98,15 +97,17 @@ const sidebarOpen = ref(false)
                                     <ul role="list" class="flex flex-1 flex-col gap-y-7">
                                         <li>
                                             <ul role="list" class="-mx-2 space-y-1">
-                                                <li v-for="item in navigation" :key="item.name">
-                                                    <NuxtLink :href="item.href"
-                                                        :class="[item.href === route.path ? 'bg-blue-700 text-white' : 'text-blue-200 hover:text-white hover:bg-blue-700', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
-                                                        <component :is="item.icon"
-                                                            :class="[item.href === route.path ? 'text-white' : 'text-blue-200 group-hover:text-white', 'h-6 w-6 shrink-0']"
-                                                            aria-hidden="true" />
-                                                        {{ item.name }}
-                                                    </NuxtLink>
-                                                </li>
+                                                <BaseDropdownMenu title="Create Job Application" height="h-24">
+                                                    <li v-for="item in navigation" :key="item.name">
+                                                        <NuxtLink :href="item.href"
+                                                            :class="[item.href === route.path ? 'bg-blue-700 text-white' : 'text-blue-200 hover:text-white hover:bg-blue-700', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
+                                                            <component :is="item.icon"
+                                                                :class="[item.href === route.path ? 'text-white' : 'text-blue-200 group-hover:text-white', 'h-6 w-6 shrink-0']"
+                                                                aria-hidden="true" />
+                                                            {{ item.name }}
+                                                        </NuxtLink>
+                                                    </li>
+                                                </BaseDropdownMenu>
                                             </ul>
                                         </li>
                                     </ul>
@@ -128,18 +129,27 @@ const sidebarOpen = ref(false)
                 </div>
                 <nav class="flex flex-1 flex-col">
                     <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                        <li class="space-y-4">
                         <li>
-                            <ul role="list" class="-mx-2 space-y-4">
-                                <li v-for="item in navigation" :key="item.name">
-                                    <NuxtLink :href="item.href"
-                                        :class="[item.href === route.path ? 'bg-blue-700 text-white' : 'text-blue-200 hover:text-white hover:bg-blue-700', 'group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold']">
-                                        <component :is="item.icon"
-                                            :class="[item.href === route.path ? 'text-white' : 'text-blue-200 group-hover:text-white', 'h-6 w-6 shrink-0']"
-                                            aria-hidden="true" />
-                                        {{ item.name }}
-                                    </NuxtLink>
-                                </li>
-                            </ul>
+                            <NuxtLink href='/portal'
+                                :class="['/portal' === route.path ? 'bg-blue-700 text-white' : 'text-blue-200 hover:text-white hover:bg-blue-700', 'group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold']">
+                                <component :is="HomeIcon"
+                                    :class="['/portal' === route.path ? 'text-white' : 'text-blue-200 group-hover:text-white', 'h-6 w-6 shrink-0']"
+                                    aria-hidden="true" />
+                                Dashboard
+                            </NuxtLink>
+                        </li>
+                        <BaseDropdownMenu title="Create Job Application">
+                            <li v-for="item in navigation" :key="item.name">
+                                <NuxtLink :href="item.href"
+                                    :class="[item.href === route.path ? 'bg-blue-700 text-white' : 'text-blue-200 hover:text-white hover:bg-blue-700', 'group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold']">
+                                    <component :is="item.icon"
+                                        :class="[item.href === route.path ? 'text-white' : 'text-blue-200 group-hover:text-white', 'h-6 w-6 shrink-0']"
+                                        aria-hidden="true" />
+                                    {{ item.name }}
+                                </NuxtLink>
+                            </li>
+                        </BaseDropdownMenu>
                         </li>
                     </ul>
                 </nav>

@@ -5,11 +5,12 @@ import { useOnboardingStore } from '~/store/useOnboardingStore';
 
 const auth = useAuthStore();
 const onboarding = useOnboardingStore();
+const applications = auth.user.applicant.applications;
 
 onBeforeMount(() => {
-    if (auth.user.applicant.education) {
-        if (auth.user.applicant.work_experience) {
-            if (auth.user.applicant.skills) {
+    if (applications[applications.length - 1].education) {
+        if (applications[applications.length - 1].work_experience) {
+            if (applications[applications.length - 1].skills) {
                 onboarding.updateCurrentPage(5);
                 onboarding.checkCurrentProgress(5);
             } else {
@@ -21,7 +22,7 @@ onBeforeMount(() => {
             onboarding.checkCurrentProgress(3);
         }
     } else {
-        if (auth.user.applicant.zip_code) {
+        if (applications[applications.length - 1].zip_code) {
             onboarding.updateCurrentPage(2);
             onboarding.checkCurrentProgress(2);
         } else {

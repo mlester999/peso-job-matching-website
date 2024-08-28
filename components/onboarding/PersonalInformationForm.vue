@@ -9,6 +9,8 @@ const props = defineProps({
 })
 
 const auth = useAuthStore();
+const applicant = auth.user.applicant;
+const applications = auth.user.applicant.applications;
 const onboarding = useOnboardingStore();
 
 onMounted(() => {
@@ -37,18 +39,18 @@ const barangays = [
 ]
 
 const form = ref({
-    firstName: auth.user.applicant.first_name ?? '',
-    middleName: auth.user.applicant.middle_name ?? '',
-    lastName: auth.user.applicant.last_name ?? '',
+    firstName: applicant.first_name ?? '',
+    middleName: applicant.middle_name ?? '',
+    lastName: applicant.last_name ?? '',
     email: auth.user.email ?? '',
-    birthDate: auth.user.applicant.birth_date ?? '',
-    sex: auth.user.applicant.sex ?? '',
-    province: auth.user.applicant.province ?? 'Laguna',
-    city: auth.user.applicant.city ?? 'Cabuyao',
-    barangay: auth.user.applicant.barangay ?? '',
-    streetAddress: auth.user.applicant.street_address ?? '',
-    zipCode: auth.user.applicant.zip_code ?? '',
-    contactNumber: auth.user.applicant.contact_number ?? '',
+    birthDate: applications[applications.length - 1].birth_date ?? '',
+    sex: applications[applications.length - 1].sex ?? '',
+    province: applications[applications.length - 1].province ?? 'Laguna',
+    city: applications[applications.length - 1].city ?? 'Cabuyao',
+    barangay: applications[applications.length - 1].barangay ?? '',
+    streetAddress: applications[applications.length - 1].street_address ?? '',
+    zipCode: applications[applications.length - 1].zip_code ?? '',
+    contactNumber: applicant.contact_number ?? '',
 });
 
 const errors = reactive({
@@ -169,22 +171,22 @@ const handleSubmit = async () => {
                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div class="sm:col-span-2">
                         <BaseInputField id="firstName" title="First Name" v-model="form.firstName" type="text"
-                            :errorMessage="errors?.firstName" />
+                            :errorMessage="errors?.firstName" disabled />
                     </div>
 
                     <div class="sm:col-span-2">
                         <BaseInputField id="middleName" title="Middle Name (Optional)" v-model="form.middleName"
-                            type="text" :errorMessage="errors?.middleName" />
+                            type="text" :errorMessage="errors?.middleName" disabled />
                     </div>
 
                     <div class="sm:col-span-2">
                         <BaseInputField id="lastName" title="Last Name" v-model="form.lastName" type="text"
-                            :errorMessage="errors?.lastName" />
+                            :errorMessage="errors?.lastName" disabled />
                     </div>
 
                     <div class="sm:col-span-2">
                         <BaseInputField id="email" title="Email Address" v-model="form.email" type="text"
-                            :errorMessage="errors?.email" />
+                            :errorMessage="errors?.email" disabled />
                     </div>
 
                     <div class="sm:col-span-2">
@@ -237,7 +239,7 @@ const handleSubmit = async () => {
 
                     <div class="sm:col-span-2">
                         <BaseInputField id="contactNumber" title="Contact Number" v-model="form.contactNumber"
-                            type="text" :errorMessage="errors?.contactNumber" :isContactNumber="true" />
+                            type="text" :errorMessage="errors?.contactNumber" :isContactNumber="true" disabled />
                     </div>
                 </div>
             </div>

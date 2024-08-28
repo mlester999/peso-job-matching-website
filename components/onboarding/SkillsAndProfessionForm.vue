@@ -19,6 +19,7 @@ const props = defineProps({
 })
 
 const auth = useAuthStore();
+const { applications } = auth.user.applicant;
 const onboarding = useOnboardingStore();
 
 onMounted(() => {
@@ -28,11 +29,11 @@ onMounted(() => {
 
 const form = ref(
     {
-        jobPositionId: JSON.parse(auth.user.applicant.skills)?.jobPositionId ?? "",
-        jobPositionTitle: JSON.parse(auth.user.applicant.skills)?.jobPositionTitle ?? "",
-        jobPositionSkills: JSON.parse(auth.user.applicant.skills)?.jobPositionSkills ?? "",
+        jobPositionId: JSON.parse(applications[applications.length - 1].skills)?.jobPositionId ?? "",
+        jobPositionTitle: JSON.parse(applications[applications.length - 1].skills)?.jobPositionTitle ?? "",
+        jobPositionSkills: JSON.parse(applications[applications.length - 1].skills)?.jobPositionSkills ?? "",
         jobPositionQuery: '',
-        skills: JSON.parse(auth.user.applicant.skills)?.skills ?? []
+        skills: JSON.parse(applications[applications.length - 1].skills)?.skills ?? []
     }
 )
 
@@ -45,8 +46,8 @@ const errors = ref(
         skills: ''
     }
 );
-const selectedJobPositionTitle = ref(JSON.parse(auth.user.applicant.skills)?.jobPositionTitle ?? '');
-const selectedJobPositionSkills = ref(JSON.parse(auth.user.applicant.skills)?.jobPositionSkills ?? []);
+const selectedJobPositionTitle = ref(JSON.parse(applications[applications.length - 1].skills)?.jobPositionTitle ?? '');
+const selectedJobPositionSkills = ref(JSON.parse(applications[applications.length - 1].skills)?.jobPositionSkills ?? []);
 
 const addSkill = (val) => {
     form.value.skills.push(val);
@@ -104,6 +105,7 @@ watch(
         form.value.jobPositionTitle = jobPosition.title;
         form.value.jobPositionId = jobPosition.id;
         form.value.jobPositionSkills = JSON.parse(jobPosition.skills);
+        form.value.skills = [];
         selectedJobPositionSkills.value = JSON.parse(jobPosition.skills)
     }
 );
