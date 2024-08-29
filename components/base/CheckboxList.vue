@@ -1,8 +1,7 @@
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
-    index: Number,
     title: String,
     isNoRecord: Boolean,
     addSkill: Function,
@@ -14,6 +13,7 @@ const isTapped = ref(props.currentSkills?.some(skill => skill === props.title) ?
 
 // Computed property to capitalize the first letter of the title
 const capitalizedTitle = computed(() => {
+    isTapped.value = props.currentSkills?.some(skill => skill === props.title) ?? false;
     if (!props.title) return '';
     return props.title.charAt(0).toUpperCase() + props.title.slice(1);
 });

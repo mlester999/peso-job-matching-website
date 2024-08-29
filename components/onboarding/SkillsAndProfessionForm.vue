@@ -162,9 +162,9 @@ watch(
                     <div v-if="selectedJobPositionSkills && selectedJobPositionSkills.length > 0"
                         class="px-4 sm:px-0 md:col-span-3">
                         <h2 class="block text-sm font-medium leading-6 text-gray-900 pb-2">Related Skills: </h2>
-                        <template v-for="(jobSkill, index) in selectedJobPositionSkills" :key="index">
-                            <BaseCheckboxList :index="index" :title="jobSkill" :addSkill="addSkill"
-                                :removeSkill="removeSkill" :currentSkills="form.skills" />
+                        <template v-for="(jobSkill, index) in selectedJobPositionSkills" :key="jobSkill.id">
+                            <BaseCheckboxList :title="jobSkill" :addSkill="addSkill" :removeSkill="removeSkill"
+                                :currentSkills="form.skills" />
                         </template>
                         <p v-if="errors.skills" class="text-red-500 text-sm mt-1">
                             {{ errors.skills }}

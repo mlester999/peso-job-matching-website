@@ -19,7 +19,7 @@ import {
     XMarkIcon,
     AcademicCapIcon,
     BriefcaseIcon,
-    PrinterIcon
+    IdentificationIcon
 } from '@heroicons/vue/24/outline'
 import {
     UserIcon
@@ -95,9 +95,18 @@ const sidebarOpen = ref(false)
                                 </div>
                                 <nav class="flex flex-1 flex-col">
                                     <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                                        <li class="-mx-2 space-y-1">
+                                            <NuxtLink href='/portal'
+                                                :class="['/portal' === route.path ? 'bg-blue-700 text-white' : 'text-blue-200 hover:text-white hover:bg-blue-700', 'group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold']">
+                                                <component :is="HomeIcon"
+                                                    :class="['/portal' === route.path ? 'text-white' : 'text-blue-200 group-hover:text-white', 'h-6 w-6 shrink-0']"
+                                                    aria-hidden="true" />
+                                                Dashboard
+                                            </NuxtLink>
+                                        </li>
                                         <li>
                                             <ul role="list" class="-mx-2 space-y-1">
-                                                <BaseDropdownMenu title="Create Job Application" height="h-24">
+                                                <BaseDropdownMenu title="Create Job Application">
                                                     <li v-for="item in navigation" :key="item.name">
                                                         <NuxtLink :href="item.href"
                                                             :class="[item.href === route.path ? 'bg-blue-700 text-white' : 'text-blue-200 hover:text-white hover:bg-blue-700', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
@@ -137,6 +146,15 @@ const sidebarOpen = ref(false)
                                     :class="['/portal' === route.path ? 'text-white' : 'text-blue-200 group-hover:text-white', 'h-6 w-6 shrink-0']"
                                     aria-hidden="true" />
                                 Dashboard
+                            </NuxtLink>
+                        </li>
+                        <li>
+                            <NuxtLink href='/portal/my-applications'
+                                :class="['/portal/my-applications' === route.path ? 'bg-blue-700 text-white' : 'text-blue-200 hover:text-white hover:bg-blue-700', 'group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold']">
+                                <component :is="IdentificationIcon"
+                                    :class="['/portal/my-applications' === route.path ? 'text-white' : 'text-blue-200 group-hover:text-white', 'h-6 w-6 shrink-0']"
+                                    aria-hidden="true" />
+                                My Applications
                             </NuxtLink>
                         </li>
                         <BaseDropdownMenu title="Create Job Application">
