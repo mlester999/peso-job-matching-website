@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import {
     Dialog,
     DialogPanel,
@@ -29,6 +29,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 
 const auth = useAuthStore();
 const route = useRoute();
+const applications = reactive(auth.user.applicant.applications);
 
 const handleLogout = async () => {
     await auth.logout();
@@ -48,18 +49,28 @@ const displayGreeting = computed(() => {
     return greet
 });
 
-const navigation = [
-    { name: 'Personal Information', href: '/portal/personal-information', icon: UsersIcon },
-    { name: 'Educational Background', href: '/portal/educational-background', icon: AcademicCapIcon },
-    { name: 'Work Experience', href: '/portal/work-experience', icon: BriefcaseIcon },
-    { name: 'Skills and Profession', href: '/portal/skills-and-profession', icon: DocumentDuplicateIcon },
+const navigation = ref([
+    { name: 'Personal Information', href: '/portal/personal-information', icon: UsersIcon, disabled: false },
+    { name: 'Educational Background', href: '/portal/educational-background', icon: AcademicCapIcon, disabled: Boolean(!applications[applications.length - 1].is_draft) || Boolean(applications[applications.length - 1].education) },
+    { name: 'Work Experience', href: '/portal/work-experience', icon: BriefcaseIcon, disabled: Boolean(!applications[applications.length - 1].is_draft) || Boolean(!applications[applications.length - 1].education) },
+    { name: 'Skills and Profession', href: '/portal/skills-and-profession', icon: DocumentDuplicateIcon, disabled: Boolean(!applications[applications.length - 1].is_draft) || Boolean(!applications[applications.length - 1].skills) },
     // { name: 'View Curriculum Vitae', href: '/portal/view-curriculum-vitae', icon: PrinterIcon },
-]
+]);
 const userNavigation = [
     { name: 'My profile', href: '/portal/my-profile', type: 'link' },
 ]
 
 const sidebarOpen = ref(false)
+console.log(auth.user.applicant.applications);
+watch(() => auth.user, (user) => {
+    navigation.value = [
+        { name: 'Personal Information', href: '/portal/personal-information', icon: UsersIcon, disabled: false },
+        { name: 'Educational Background', href: '/portal/educational-background', icon: AcademicCapIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(user.applicant.applications[user.applicant.applications.length - 1].education) },
+        { name: 'Work Experience', href: '/portal/work-experience', icon: BriefcaseIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(!user.applicant.applications[user.applicant.applications.length - 1].work_experience) },
+        { name: 'Skills and Profession', href: '/portal/skills-and-profession', icon: DocumentDuplicateIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(!user.applicant.applications[user.applicant.applications.length - 1].skills) },
+        // { name: 'View Curriculum Vitae', href: '/portal/view-curriculum-vitae', icon: PrinterIcon },
+    ]
+}, { deep: true }); // Set deep: true if applications has nested objects/arrays
 </script>
 
 <template>
@@ -159,10 +170,10 @@ const sidebarOpen = ref(false)
                         </li>
                         <BaseDropdownMenu title="Create Job Application">
                             <li v-for="item in navigation" :key="item.name">
-                                <NuxtLink :href="item.href"
-                                    :class="[item.href === route.path ? 'bg-blue-700 text-white' : 'text-blue-200 hover:text-white hover:bg-blue-700', 'group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold']">
+                                <NuxtLink event="" :href="item.disabled ? '' : item.href"
+                                    :class="[item.href === route.path ? 'bg-blue-700 text-white' : 'text-blue-200', 'group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold', item.disabled ? 'text-blue-400' : 'hover:text-white hover:bg-blue-700']">
                                     <component :is="item.icon"
-                                        :class="[item.href === route.path ? 'text-white' : 'text-blue-200 group-hover:text-white', 'h-6 w-6 shrink-0']"
+                                        :class="[item.href === route.path ? 'text-white' : 'text-blue-200', 'h-6 w-6 shrink-0', item.disabled ? 'text-blue-400' : 'group-hover:text-white']"
                                         aria-hidden="true" />
                                     {{ item.name }}
                                 </NuxtLink>

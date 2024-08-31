@@ -2,5 +2,5 @@
 </script>
 
 <template>
-    <OnboardingPersonalInformationForm :isFromDashboard="true" />
+    <OnboardingPersonalInformationForm :isFromDashboard="true" :isCreate="true" />
 </template>

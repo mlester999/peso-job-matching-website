@@ -18,7 +18,9 @@ import { toast } from 'vue3-toastify';
 
 
 const props = defineProps({
-    isFromDashboard: Boolean
+    isFromDashboard: Boolean,
+    isCreate: Boolean,
+    application: Object
 })
 
 const auth = useAuthStore();
@@ -29,23 +31,58 @@ onMounted(() => {
     auth.fetchUser();
 })
 
-const form = ref(JSON.parse(applications[applications.length - 1].education) ?? [
-    {
-        schoolName: '',
-        educationalLevel: '',
-        educationalLevelQuery: '',
-        level: '',
-        levelQuery: '',
-        course: '',
-        courseQuery: '',
-        startDate: '',
-        endDate: '',
-    }
-])
-
+const form = ref(props.isCreate
+    ? applications[applications.length - 1].is_draft
+        ? JSON.parse(applications[applications.length - 1].education) ?? [
+            {
+                schoolName: '',
+                educationalLevel: '',
+                educationalLevelQuery: '',
+                level: '',
+                levelQuery: '',
+                course: '',
+                courseQuery: '',
+                startDate: '',
+                endDate: '',
+            }
+        ]
+        : [
+            {
+                schoolName: '',
+                educationalLevel: '',
+                educationalLevelQuery: '',
+                level: '',
+                levelQuery: '',
+                course: '',
+                courseQuery: '',
+                startDate: '',
+                endDate: '',
+            }
+        ]
+    : props.application ? JSON.parse(props.application.education) : JSON.parse(applications[0].education) ?? [
+        {
+            schoolName: '',
+            educationalLevel: '',
+            educationalLevelQuery: '',
+            level: '',
+            levelQuery: '',
+            course: '',
+            courseQuery: '',
+            startDate: '',
+            endDate: '',
+        }
+    ]
+)
+console.log(form.value);
 // Computed property that generates the array based on education length
 const errorsWithData = computed(() => {
-    return Array.from({ length: JSON.parse(applications[applications.length - 1].education)?.length ?? 0 }, () => ({
+    return Array.from({
+        length: props.isCreate
+            ? applications[applications.length - 1].is_draft
+                ? JSON.parse(applications[applications.length - 1].education)?.length
+                : 0
+            : props.application ? JSON.parse(props.application.education)?.length : JSON.parse(applications[0].education)?.length ?? 0
+    }, () => ({
         schoolName: '',
         educationalLevel: '',
         educationalLevelQuery: '',
@@ -103,7 +140,7 @@ const removeField = (index) => {
 }
 
 const handleSubmit = async () => {
-    const { error } = await onboarding.submitEducationalBackground(form.value, auth.user.applicant.id);
+    const { error } = await onboarding.submitEducationalBackground(form.value, auth.user.applicant.id, props.application);
 
     if (error.value?.data?.error) {
         if (typeof error.value.data.error !== 'string') {

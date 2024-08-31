@@ -10,7 +10,7 @@ export const usePortalStore = defineStore('portal', () => {
     isLoading.value = true;
     await useApiFetch('/sanctum/csrf-cookie');
 
-    const personalInformationResponse = await useApiFetch(`/api/my-profile/update-personal-information/${applicantId}`, {
+    const personalInformationResponse = await useApiFetch(`/api/my-profile/update-profile-information/${applicantId}`, {
       method: 'PUT',
       body: info,
     });

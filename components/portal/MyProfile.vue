@@ -45,33 +45,33 @@ const logoutOtherSessionsErrors = reactive({
 });
 
 const personalInformationSubmit = async () => {
-    const { error } = await portal.submitPersonalInformation(changePasswordForm.value, auth.user.applicant.id);
+    const { error } = await portal.submitPersonalInformation(personalInformationForm.value, auth.user.applicant.id);
 
     if (error.value?.data?.error) {
         if (typeof error.value.data.error !== 'string') {
-            if (error.value.data.error.currentPassword) {
-                changePasswordErrors.currentPassword = error.value.data.error.currentPassword[0];
+            if (error.value.data.error.firstName) {
+                personalInformationErrors.firstName = error.value.data.error.firstName[0];
             } else {
-                changePasswordErrors.currentPassword = '';
+                personalInformationErrors.firstName = '';
             }
 
-            if (error.value.data.error.newPassword) {
-                changePasswordErrors.newPassword = error.value.data.error.newPassword[0];
+            if (error.value.data.error.lastName) {
+                personalInformationErrors.lastName = error.value.data.error.lastName[0];
             } else {
-                changePasswordErrors.newPassword = '';
+                personalInformationErrors.lastName = '';
             }
 
-            if (error.value.data.error.confirmNewPassword) {
-                changePasswordErrors.confirmNewPassword = error.value.data.error.confirmNewPassword[0];
+            if (error.value.data.error.email) {
+                personalInformationErrors.email = error.value.data.error.email[0];
             } else {
-                changePasswordErrors.confirmNewPassword = '';
+                personalInformationErrors.email = '';
             }
         }
     } else {
-        changePasswordErrors.firstName = '';
-        changePasswordErrors.middleName = '';
-        changePasswordErrors.lastName = '';
-        changePasswordErrors.email = '';
+        personalInformationErrors.firstName = '';
+        personalInformationErrors.middleName = '';
+        personalInformationErrors.lastName = '';
+        personalInformationErrors.email = '';
         navigateTo('/portal');
     }
 }

@@ -15,7 +15,9 @@ import { toast } from 'vue3-toastify';
 
 
 const props = defineProps({
-    isFromDashboard: Boolean
+    isFromDashboard: Boolean,
+    isCreate: Boolean,
+    application: Object
 })
 
 const auth = useAuthStore();
@@ -29,11 +31,27 @@ onMounted(() => {
 
 const form = ref(
     {
-        jobPositionId: JSON.parse(applications[applications.length - 1].skills)?.jobPositionId ?? "",
-        jobPositionTitle: JSON.parse(applications[applications.length - 1].skills)?.jobPositionTitle ?? "",
-        jobPositionSkills: JSON.parse(applications[applications.length - 1].skills)?.jobPositionSkills ?? "",
+        jobPositionId: props.isCreate
+            ? applications[applications.length - 1].is_draft
+                ? JSON.parse(applications[applications.length - 1].skills)?.jobPositionId ?? ''
+                : ''
+            : props.application ? JSON.parse(props.application.skills)?.jobPositionId : JSON.parse(applications[0].skills)?.jobPositionId ?? '',
+        jobPositionTitle: props.isCreate
+            ? applications[applications.length - 1].is_draft
+                ? JSON.parse(applications[applications.length - 1].skills)?.jobPositionTitle ?? ''
+                : ''
+            : props.application ? JSON.parse(props.application.skills)?.jobPositionTitle : JSON.parse(applications[0].skills)?.jobPositionTitle ?? '',
+        jobPositionSkills: props.isCreate
+            ? applications[applications.length - 1].is_draft
+                ? JSON.parse(applications[applications.length - 1].skills)?.jobPositionSkills ?? ''
+                : ''
+            : props.application ? JSON.parse(props.application.skills)?.jobPositionSkills : JSON.parse(applications[0].skills)?.jobPositionSkills ?? '',
         jobPositionQuery: '',
-        skills: JSON.parse(applications[applications.length - 1].skills)?.skills ?? []
+        skills: props.isCreate
+            ? applications[applications.length - 1].is_draft
+                ? JSON.parse(applications[applications.length - 1].skills)?.skills ?? []
+                : []
+            : props.application ? JSON.parse(props.application.skills)?.skills : JSON.parse(applications[0].skills)?.skills ?? [],
     }
 )
 
@@ -46,8 +64,16 @@ const errors = ref(
         skills: ''
     }
 );
-const selectedJobPositionTitle = ref(JSON.parse(applications[applications.length - 1].skills)?.jobPositionTitle ?? '');
-const selectedJobPositionSkills = ref(JSON.parse(applications[applications.length - 1].skills)?.jobPositionSkills ?? []);
+const selectedJobPositionTitle = ref(props.isCreate
+    ? applications[applications.length - 1].is_draft
+        ? JSON.parse(applications[applications.length - 1].skills)?.jobPositionTitle
+        : ''
+    : props.application ? JSON.parse(props.application.skills)?.jobPositionTitle : JSON.parse(applications[0].skills)?.jobPositionTitle ?? '',);
+const selectedJobPositionSkills = ref(props.isCreate
+    ? applications[applications.length - 1].is_draft
+        ? JSON.parse(applications[applications.length - 1].skills)?.jobPositionSkills
+        : []
+    : props.application ? JSON.parse(props.application.skills)?.jobPositionSkills : JSON.parse(applications[0].skills)?.jobPositionSkills ?? []);
 
 const addSkill = (val) => {
     form.value.skills.push(val);
@@ -61,7 +87,7 @@ const removeSkill = (title) => {
 }
 
 const handleSubmit = async () => {
-    const { error } = await onboarding.submitSkills(form.value, auth.user.applicant.id);
+    const { error } = await onboarding.submitSkills(form.value, auth.user.applicant.id, props.application);
 
     if (error.value?.data?.error) {
         if (typeof error.value.data.error !== 'string') {

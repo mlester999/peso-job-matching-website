@@ -22,60 +22,104 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     jobPositionSkills.value = skills;
   };
 
-  const submitPersonalInformation = async (info, applicantId) => {
+  const submitPersonalInformation = async (info, applicantId, application) => {
     isLoading.value = true;
     await useApiFetch('/sanctum/csrf-cookie');
 
-    const personalInformationResponse = await useApiFetch(`/api/submit-personal-information/${applicantId}`, {
-      method: 'POST',
-      body: info,
-    });
-
-    isLoading.value = false;
-
-    return personalInformationResponse;
+    if (application) {
+      const updatePersonalInformationResponse = await useApiFetch(`/api/update-personal-information/${application.id}`, {
+        method: 'PUT',
+        body: info,
+      });
+  
+      isLoading.value = false;
+  
+      return updatePersonalInformationResponse;
+    } else {
+      const submitPersonalInformationResponse = await useApiFetch(`/api/submit-personal-information/${applicantId}`, {
+        method: 'POST',
+        body: info,
+      });
+  
+      isLoading.value = false;
+  
+      return submitPersonalInformationResponse;
+    }
   };
 
-  const submitEducationalBackground = async (info, applicantId) => {
+  const submitEducationalBackground = async (info, applicantId, application) => {
     isLoading.value = true;
     await useApiFetch('/sanctum/csrf-cookie');
 
-    const submitEducationalResponse = await useApiFetch(`/api/submit-educational-background/${applicantId}`, {
-      method: 'POST',
-      body: info,
-    });
+    if (application) {
+      const updateEducationalResponse = await useApiFetch(`/api/update-educational-background/${application.id}`, {
+        method: 'PUT',
+        body: info,
+      });
 
-    isLoading.value = false;
+      isLoading.value = false;
 
-    return submitEducationalResponse;
+      return updateEducationalResponse;
+    } else {
+      const submitEducationalResponse = await useApiFetch(`/api/submit-educational-background/${applicantId}`, {
+        method: 'POST',
+        body: info,
+      });
+  
+      isLoading.value = false;
+  
+      return submitEducationalResponse;
+    }
   };
 
-  const submitWorkExperience = async (info, applicantId) => {
+  const submitWorkExperience = async (info, applicantId, application) => {
     isLoading.value = true;
     await useApiFetch('/sanctum/csrf-cookie');
 
-    const submitWorkExperienceResponse = await useApiFetch(`/api/submit-work-experience/${applicantId}`, {
-      method: 'POST',
-      body: info,
-    });
+    if (application) {
+      const updateWorkExperienceResponse = await useApiFetch(`/api/update-work-experience/${application.id}`, {
+        method: 'PUT',
+        body: info,
+      });
 
-    isLoading.value = false;
+      isLoading.value = false;
 
-    return submitWorkExperienceResponse;
+      return updateWorkExperienceResponse;
+    } else {
+      const submitWorkExperienceResponse = await useApiFetch(`/api/submit-work-experience/${applicantId}`, {
+        method: 'POST',
+        body: info,
+      });
+  
+      isLoading.value = false;
+  
+      return submitWorkExperienceResponse;
+    }
   };
 
-  const submitSkills = async (info, applicantId) => {
+  const submitSkills = async (info, applicantId, application) => {
     isLoading.value = true;
     await useApiFetch('/sanctum/csrf-cookie');
 
-    const submitSkillsResponse = await useApiFetch(`/api/submit-skills/${applicantId}`, {
-      method: 'POST',
-      body: info,
-    });
+    if (application) {
+      const updateSkillsResponse = await useApiFetch(`/api/update-skills/${application.id}`, {
+        method: 'POST',
+        body: info,
+      });
 
-    isLoading.value = false;
+      isLoading.value = false;
 
-    return submitSkillsResponse;
+      return updateSkillsResponse;
+    } else {
+      const submitSkillsResponse = await useApiFetch(`/api/submit-skills/${application.id}`, {
+        method: 'POST',
+        body: info,
+      });
+
+      isLoading.value = false;
+
+      return submitSkillsResponse;
+    }
   };
 
   const confirmOnboarding = async (applicantId) => {

@@ -34,7 +34,7 @@ const formatDate = (date) => {
 const groupedApplications = computed(() => {
     const groups = {};
 
-    auth.user.applicant.applications.forEach((application) => {
+    auth.user.applicant.applications.filter(el => !el.is_draft).forEach((application) => {
         const formattedDate = formatDate(application.created_at);
         if (!groups[formattedDate]) {
             groups[formattedDate] = [];

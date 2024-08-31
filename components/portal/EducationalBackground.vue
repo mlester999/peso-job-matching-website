@@ -3,5 +3,5 @@
 </script>
 
 <template>
-    <OnboardingEducationalBackgroundForm :isFromDashboard="true" />
+    <OnboardingEducationalBackgroundForm :isFromDashboard="true" :isCreate="true" />
 </template>

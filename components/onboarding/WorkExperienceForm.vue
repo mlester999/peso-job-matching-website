@@ -17,7 +17,9 @@ import { toast } from 'vue3-toastify';
 
 
 const props = defineProps({
-    isFromDashboard: Boolean
+    isFromDashboard: Boolean,
+    isCreate: Boolean,
+    application: Object
 })
 
 
@@ -29,23 +31,58 @@ onMounted(() => {
     auth.fetchUser();
 })
 
-const form = ref(JSON.parse(applications[applications.length - 1].work_experience) ?? [
-    {
-        companyName: '',
-        companyAddress: '',
-        employmentType: '',
-        employmentTypeQuery: '',
-        jobTitle: '',
-        industry: '',
-        industryQuery: '',
-        startDate: '',
-        endDate: '',
-    }
-])
+const form = ref(props.isCreate
+    ? applications[applications.length - 1].is_draft
+        ? JSON.parse(applications[applications.length - 1].work_experience) ?? [
+            {
+                companyName: '',
+                companyAddress: '',
+                employmentType: '',
+                employmentTypeQuery: '',
+                jobTitle: '',
+                industry: '',
+                industryQuery: '',
+                startDate: '',
+                endDate: '',
+            }
+        ]
+        : [
+            {
+                companyName: '',
+                companyAddress: '',
+                employmentType: '',
+                employmentTypeQuery: '',
+                jobTitle: '',
+                industry: '',
+                industryQuery: '',
+                startDate: '',
+                endDate: '',
+            }
+        ]
+    : props.application ? JSON.parse(props.application.work_experience) : JSON.parse(applications[0].work_experience) ?? [
+        {
+            companyName: '',
+            companyAddress: '',
+            employmentType: '',
+            employmentTypeQuery: '',
+            jobTitle: '',
+            industry: '',
+            industryQuery: '',
+            startDate: '',
+            endDate: '',
+        }
+    ]
+)
 
-// Computed property that generates the array based on education length
+// Computed property that generates the array based on work_experience length
 const errorsWithData = computed(() => {
-    return Array.from({ length: JSON.parse(applications[applications.length - 1].work_experience)?.length ?? 0 }, () => ({
+    return Array.from({
+        length: props.isCreate
+            ? applications[applications.length - 1].is_draft
+                ? JSON.parse(applications[applications.length - 1].work_experience)?.length
+                : 0
+            : props.application ? JSON.parse(props.application.work_experience)?.length : JSON.parse(applications[0].work_experience)?.length ?? 0
+    }, () => ({
         companyName: '',
         companyAddress: '',
         employmentType: '',
@@ -103,7 +140,7 @@ const removeField = (index) => {
 }
 
 const handleSubmit = async () => {
-    const { error } = await onboarding.submitWorkExperience(form.value, auth.user.applicant.id);
+    const { error } = await onboarding.submitWorkExperience(form.value, auth.user.applicant.id, props.application);
 
     if (error.value?.data?.error) {
         if (typeof error.value.data.error !== 'string') {

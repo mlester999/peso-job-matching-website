@@ -5,7 +5,9 @@ import { useOnboardingStore } from '~/store/useOnboardingStore';
 import { toast } from 'vue3-toastify';
 
 const props = defineProps({
-    isFromDashboard: Boolean
+    isFromDashboard: Boolean,
+    isCreate: Boolean,
+    application: Object
 })
 
 const auth = useAuthStore();
@@ -43,14 +45,43 @@ const form = ref({
     middleName: applicant.middle_name ?? '',
     lastName: applicant.last_name ?? '',
     email: auth.user.email ?? '',
-    birthDate: applications[applications.length - 1].birth_date ?? '',
-    sex: applications[applications.length - 1].sex ?? '',
-    province: applications[applications.length - 1].province ?? 'Laguna',
-    city: applications[applications.length - 1].city ?? 'Cabuyao',
-    barangay: applications[applications.length - 1].barangay ?? '',
-    streetAddress: applications[applications.length - 1].street_address ?? '',
-    zipCode: applications[applications.length - 1].zip_code ?? '',
+    birthDate: props.isCreate
+        ? applications[applications.length - 1].is_draft
+            ? applications[applications.length - 1].birth_date
+            : ''
+        : props.application ? props.application.birth_date : applications[0].birth_date ?? '',
+    sex: props.isCreate
+        ? applications[applications.length - 1].is_draft
+            ? applications[applications.length - 1].sex
+            : ''
+        : props.application ? props.application.sex : applications[0].sex ?? '',
+    province: props.isCreate
+        ? applications[applications.length - 1].is_draft
+            ? applications[applications.length - 1].province
+            : 'Laguna'
+        : props.application ? props.application.province : applications[0].province ?? 'Laguna',
+    city: props.isCreate
+        ? applications[applications.length - 1].is_draft
+            ? applications[applications.length - 1].city
+            : 'Cabuyao'
+        : props.application ? props.application.city : applications[0].city ?? 'Cabuyao',
+    barangay: props.isCreate
+        ? applications[applications.length - 1].is_draft
+            ? applications[applications.length - 1].barangay
+            : ''
+        : props.application ? props.application.barangay : applications[0].barangay ?? '',
+    streetAddress: props.isCreate
+        ? applications[applications.length - 1].is_draft
+            ? applications[applications.length - 1].street_address
+            : ''
+        : props.application ? props.application.street_address : applications[0].street_address ?? '',
+    zipCode: props.isCreate
+        ? applications[applications.length - 1].is_draft
+            ? applications[applications.length - 1].zip_code
+            : ''
+        : props.application ? props.application.zip_code : applications[0].zip_code ?? '',
     contactNumber: applicant.contact_number ?? '',
+    isCreate: props.isCreate ?? false
 });
 
 const errors = reactive({
@@ -69,7 +100,7 @@ const errors = reactive({
 });
 
 const handleSubmit = async () => {
-    const { error } = await onboarding.submitPersonalInformation(form.value, auth.user.applicant.id);
+    const { error } = await onboarding.submitPersonalInformation(form.value, auth.user.applicant.id, props.application);
 
     if (error.value?.data?.error) {
         if (typeof error.value.data.error !== 'string') {
@@ -156,7 +187,11 @@ const handleSubmit = async () => {
             onboarding.updateCurrentPage(2);
             onboarding.checkCurrentProgress(2);
         } else {
-            toast.success('Updated info successfully');
+            if (props.isCreate) {
+                navigateTo('/portal/educational-background');
+            } else {
+                toast.success('Updated info successfully');
+            }
         }
     }
 };
