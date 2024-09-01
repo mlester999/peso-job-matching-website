@@ -23,7 +23,7 @@ const handleSubmit = async () => {
             <div class="pb-12">
                 <h2 class="text-2xl font-bold leading-7 text-gray-900">Confirmation</h2>
 
-                <div class="bg-white py-8">
+                <div class="bg-transparent py-8">
                     <div class="relative isolate">
                         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                             <div

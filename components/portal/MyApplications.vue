@@ -9,12 +9,24 @@ onMounted(() => {
     auth.fetchUser();
 })
 
-const statuses = [
+const statusClasses = [
+    'text-red-600 bg-red-50 ring-red-500/10',
+    'text-gray-600 bg-gray-50 ring-gray-500/10',
     'text-blue-600 bg-blue-50 ring-blue-500/10',
     'text-orange-600 bg-orange-50 ring-orange-500/10',
     'text-yellow-700 bg-yellow-50 ring-yellow-600/20',
     'text-green-700 bg-green-50 ring-green-600/20',
     'text-red-700 bg-red-50 ring-red-600/10',
+]
+
+const statuses = [
+    'Disqualified',
+    'In Progress',
+    'For Interview',
+    'For Requirements',
+    'Qualified',
+    'For Deployment',
+    'Deployed',
 ]
 
 const auth = useAuthStore();
@@ -34,13 +46,16 @@ const formatDate = (date) => {
 const groupedApplications = computed(() => {
     const groups = {};
 
-    auth.user.applicant.applications.filter(el => !el.is_draft).forEach((application) => {
-        const formattedDate = formatDate(application.created_at);
-        if (!groups[formattedDate]) {
-            groups[formattedDate] = [];
-        }
-        groups[formattedDate].push(application);
-    });
+    auth.user.applicant.applications
+        .filter(el => !el.is_draft)
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .forEach((application) => {
+            const formattedDate = formatDate(application.created_at);
+            if (!groups[formattedDate]) {
+                groups[formattedDate] = [];
+            }
+            groups[formattedDate].push(application);
+        });
 
     return groups;
 });
@@ -82,8 +97,8 @@ console.log(groupedApplications.value);
                                     <td class="hidden py-5 pr-6 sm:table-cell">
                                         <div class="flex items-start gap-x-3">
                                             <div
-                                                :class="[statuses[application.status], 'rounded-md py-1 px-2 text-xs font-medium ring-1 ring-inset']">
-                                                On Process</div>
+                                                :class="[statusClasses[application.status], 'rounded-md py-1 px-2 text-xs font-medium ring-1 ring-inset']">
+                                                {{ statuses[application.status] }}</div>
                                         </div>
 
                                     </td>

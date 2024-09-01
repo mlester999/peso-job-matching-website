@@ -111,7 +111,11 @@ const handleSubmit = async () => {
             onboarding.updateCurrentPage(5);
             onboarding.checkCurrentProgress(5);
         } else {
-            toast.success('Updated info successfully');
+            if (props.isCreate) {
+                navigateTo('/portal/confirmation');
+            } else {
+                toast.success('Updated info successfully');
+            }
         }
     }
 };

@@ -73,7 +73,7 @@ const form = ref(props.isCreate
         }
     ]
 )
-console.log(form.value);
+
 // Computed property that generates the array based on education length
 const errorsWithData = computed(() => {
     return Array.from({
@@ -196,7 +196,11 @@ const handleSubmit = async () => {
             onboarding.updateCurrentPage(3);
             onboarding.checkCurrentProgress(3);
         } else {
-            toast.success('Updated info successfully');
+            if (props.isCreate) {
+                navigateTo('/portal/work-experience');
+            } else {
+                toast.success('Updated info successfully');
+            }
         }
     }
 };

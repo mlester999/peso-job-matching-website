@@ -15,10 +15,10 @@ onMounted(() => {
 });
 
 const stats = [
-    { id: 1, name: 'Job Match', stat: 0, icon: UsersIcon },
-    { id: 2, name: 'Number of Job Application', stat: auth.user.applicant.applications.length, icon: PencilSquareIcon },
-    { id: 3, name: 'Total Vacancies', stat: 0, icon: MegaphoneIcon },
-    { id: 4, name: 'Number of Invitation', stat: 0, icon: EnvelopeOpenIcon },
+    { id: 1, name: 'Job Match', stat: 0, icon: UsersIcon, href: "#" },
+    { id: 2, name: 'Number of Job Application', stat: auth.user.applicant.applications.length, icon: PencilSquareIcon, href: "/portal/my-applications" },
+    { id: 3, name: 'Total Vacancies', stat: 0, icon: MegaphoneIcon, href: "#" },
+    { id: 4, name: 'Number of Invitation', stat: 0, icon: EnvelopeOpenIcon, href: "#" },
 ]
 </script>
 
@@ -42,8 +42,8 @@ const stats = [
                     <p class="text-2xl font-semibold text-gray-900">{{ item.stat }}</p>
                     <div class="absolute inset-x-0 bottom-0 bg-gray-50 px-4 py-4 sm:px-6">
                         <div class="text-sm">
-                            <a href="#" class="font-medium text-blue-600 hover:text-blue-500">View all<span
-                                    class="sr-only"> {{ item.name }} stats</span></a>
+                            <NuxtLink :href="item.href" class="font-medium text-blue-600 hover:text-blue-500">View
+                                all<span class="sr-only"> {{ item.name }} stats</span></NuxtLink>
                         </div>
                     </div>
                 </dd>

@@ -203,7 +203,11 @@ const handleSubmit = async () => {
             onboarding.updateCurrentPage(4);
             onboarding.checkCurrentProgress(4);
         } else {
-            toast.success('Updated info successfully');
+            if (props.isCreate) {
+                navigateTo('/portal/skills-and-profession');
+            } else {
+                toast.success('Updated info successfully');
+            }
         }
     }
 };

@@ -111,7 +111,7 @@ export const useOnboardingStore = defineStore('onboarding', () => {
 
       return updateSkillsResponse;
     } else {
-      const submitSkillsResponse = await useApiFetch(`/api/submit-skills/${application.id}`, {
+      const submitSkillsResponse = await useApiFetch(`/api/submit-skills/${applicantId}`, {
         method: 'POST',
         body: info,
       });

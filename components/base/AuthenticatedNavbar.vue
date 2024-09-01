@@ -14,6 +14,7 @@ import {
     Bars3Icon,
     BellIcon,
     DocumentDuplicateIcon,
+    CheckBadgeIcon,
     HomeIcon,
     UsersIcon,
     XMarkIcon,
@@ -51,9 +52,10 @@ const displayGreeting = computed(() => {
 
 const navigation = ref([
     { name: 'Personal Information', href: '/portal/personal-information', icon: UsersIcon, disabled: false },
-    { name: 'Educational Background', href: '/portal/educational-background', icon: AcademicCapIcon, disabled: Boolean(!applications[applications.length - 1].is_draft) || Boolean(applications[applications.length - 1].education) },
+    { name: 'Educational Background', href: '/portal/educational-background', icon: AcademicCapIcon, disabled: Boolean(!applications[applications.length - 1].is_draft) || Boolean(!applications[applications.length - 1].zip_code) },
     { name: 'Work Experience', href: '/portal/work-experience', icon: BriefcaseIcon, disabled: Boolean(!applications[applications.length - 1].is_draft) || Boolean(!applications[applications.length - 1].education) },
-    { name: 'Skills and Profession', href: '/portal/skills-and-profession', icon: DocumentDuplicateIcon, disabled: Boolean(!applications[applications.length - 1].is_draft) || Boolean(!applications[applications.length - 1].skills) },
+    { name: 'Skills and Profession', href: '/portal/skills-and-profession', icon: DocumentDuplicateIcon, disabled: Boolean(!applications[applications.length - 1].is_draft) || Boolean(!applications[applications.length - 1].work_experience) },
+    { name: 'Confirmation', href: '/portal/confirmation', icon: CheckBadgeIcon, disabled: Boolean(!applications[applications.length - 1].is_draft) || Boolean(!applications[applications.length - 1].skills) },
     // { name: 'View Curriculum Vitae', href: '/portal/view-curriculum-vitae', icon: PrinterIcon },
 ]);
 const userNavigation = [
@@ -65,9 +67,10 @@ console.log(auth.user.applicant.applications);
 watch(() => auth.user, (user) => {
     navigation.value = [
         { name: 'Personal Information', href: '/portal/personal-information', icon: UsersIcon, disabled: false },
-        { name: 'Educational Background', href: '/portal/educational-background', icon: AcademicCapIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(user.applicant.applications[user.applicant.applications.length - 1].education) },
-        { name: 'Work Experience', href: '/portal/work-experience', icon: BriefcaseIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(!user.applicant.applications[user.applicant.applications.length - 1].work_experience) },
-        { name: 'Skills and Profession', href: '/portal/skills-and-profession', icon: DocumentDuplicateIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(!user.applicant.applications[user.applicant.applications.length - 1].skills) },
+        { name: 'Educational Background', href: '/portal/educational-background', icon: AcademicCapIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(!user.applicant.applications[user.applicant.applications.length - 1].zip_code) },
+        { name: 'Work Experience', href: '/portal/work-experience', icon: BriefcaseIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(!user.applicant.applications[user.applicant.applications.length - 1].education) },
+        { name: 'Skills and Profession', href: '/portal/skills-and-profession', icon: DocumentDuplicateIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(!user.applicant.applications[user.applicant.applications.length - 1].work_experience) },
+        { name: 'Confirmation', href: '/portal/confirmation', icon: CheckBadgeIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(!user.applicant.applications[user.applicant.applications.length - 1].skills) },
         // { name: 'View Curriculum Vitae', href: '/portal/view-curriculum-vitae', icon: PrinterIcon },
     ]
 }, { deep: true }); // Set deep: true if applications has nested objects/arrays
