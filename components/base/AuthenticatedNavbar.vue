@@ -63,7 +63,26 @@ const userNavigation = [
 ]
 
 const sidebarOpen = ref(false)
-console.log(auth.user.applicant.applications);
+
+const showNotificationsDropdown = ref(false);
+
+// Toggle Notification Dropdown
+const toggleNotificationsDropdown = () => {
+    showNotificationsDropdown.value = !showNotificationsDropdown.value;
+
+    if (showNotificationsDropdown.value) {
+        auth.updateViewedNotifications(auth.user.applicant.id);
+    }
+};
+
+const notifications = computed(() => {
+    return auth.user.applicant.notifications;
+});
+
+const isNotificationsViewed = computed(() => {
+    return auth.user.applicant.notifications.find(el => el.is_viewed == 1);
+});
+
 watch(() => auth.user, (user) => {
     navigation.value = [
         { name: 'Personal Information', href: '/portal/personal-information', icon: UsersIcon, disabled: false },
@@ -74,6 +93,8 @@ watch(() => auth.user, (user) => {
         // { name: 'View Curriculum Vitae', href: '/portal/view-curriculum-vitae', icon: PrinterIcon },
     ]
 }, { deep: true }); // Set deep: true if applications has nested objects/arrays
+
+
 </script>
 
 <template>
@@ -205,10 +226,39 @@ watch(() => auth.user, (user) => {
                             {{ displayGreeting }}!</h1>
                     </form>
                     <div class="flex items-center gap-x-4 lg:gap-x-6">
-                        <button type="button" class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
-                            <span class="sr-only">View notifications</span>
-                            <BellIcon class="h-6 w-6" aria-hidden="true" />
-                        </button>
+                        <div class="relative">
+                            <button @click="toggleNotificationsDropdown" type="button"
+                                class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+                                <span class="sr-only">View notifications</span>
+                                <BellIcon class="h-6 w-6" aria-hidden="true" />
+                                <span v-if="isNotificationsViewed"
+                                    class="absolute right-0 top-0 block h-2.5 w-2.5 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-green-400 ring-2 ring-white" />
+                                <span v-else
+                                    class="absolute right-0 top-0 block h-2.5 w-2.5 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-gray-300 ring-2 ring-white" />
+                            </button>
+
+                            <div class="z-50 max-w-sm right-0 w-max my-4 overflow-hidden text-base list-none bg-white divide-y divide-gray-100 rounded shadow-lg dark:divide-gray-600 dark:bg-gray-700"
+                                :class="{
+                                    hidden: !showNotificationsDropdown,
+                                }" id="notification-dropdown" style="position: absolute"
+                                data-popper-placement="bottom">
+                                <div
+                                    class="block px-4 py-2 text-base font-medium text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    Notifications
+                                </div>
+                                <div>
+                                    <div v-if="notifications.length === 0"
+                                        class="flex px-4 py-3 border-b dark:border-gray-600">
+                                        <div class="w-full pl-3">
+                                            <div class="text-gray-700 font-normal text-sm mb-1.5 dark:text-gray-200">
+                                                There's no notification right now...
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <BaseNotification :notifications="notifications" />
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Separator -->
                         <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true" />

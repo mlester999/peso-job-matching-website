@@ -231,6 +231,18 @@ export const useAuthStore = defineStore('auth', () => {
       return resetResponse;
     };
 
+    const updateViewedNotifications = async (applicantId) => {
+      isLoading.value = true;
+      await useApiFetch('/sanctum/csrf-cookie');
+  
+      const updatedNotificationsResponse = await useApiFetch(`/api/update-notifications/${applicantId}`, {
+        method: 'PUT'
+      });
+  
+      isLoading.value = false;
+  
+      return updatedNotificationsResponse;
+    };
 
-  return { user, isLoading, errorMessage, emailForReset, login, logout, register, application, verifyUsingSms, verifyUsingEmail, verifyContactNumber, verifyEmailAddress, sendResetPasswordLink, resetPassword, fetchUser, fetchResetPasswordEmail };
+  return { user, isLoading, errorMessage, emailForReset, login, logout, register, application, verifyUsingSms, verifyUsingEmail, verifyContactNumber, verifyEmailAddress, sendResetPasswordLink, resetPassword, fetchUser, fetchResetPasswordEmail, updateViewedNotifications };
 });

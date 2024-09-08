@@ -1,4 +1,4 @@
-import {format, parse, isToday, isYesterday, parseISO, getDay} from 'date-fns'
+import {format, parse, isToday, isYesterday, parseISO, getDay, formatDistanceToNow} from 'date-fns'
 
 const datefns: any={
   format,
@@ -6,7 +6,8 @@ const datefns: any={
   isYesterday,
   parse,
   parseISO,
-  getDay
+  getDay,
+  formatDistanceToNow
 }
 
 export default defineNuxtPlugin((nuxtApp) => {
