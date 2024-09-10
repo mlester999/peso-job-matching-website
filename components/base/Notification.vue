@@ -4,12 +4,29 @@ import { formatDistanceToNow } from "date-fns";
 const props = defineProps({
     notifications: Array,
 });
+
+const isShowModal = ref(false);
+const modalTitle = ref('');
+const modalDescription = ref('');
+
+const showDetailedNotification = (notification) => {
+    isShowModal.value = true;
+    modalTitle.value = notification.title;
+    modalDescription.value = notification.description;
+}
+
+const handleCloseModal = () => {
+    isShowModal.value = false;
+    modalTitle.value = '';
+    modalDescription.value = '';
+}
 </script>
 
 <template>
     <div class="max-h-[600px] overflow-y-auto">
         <div v-for="notification in notifications.slice().reverse().slice(0, 5)" :key="notification.id"
-            class="flex px-4 py-3 border-b dark:border-gray-600">
+            @click="showDetailedNotification(notification)"
+            class="flex px-4 py-3 border-b border-gray-300 hover:bg-gray-100 cursor-pointer">
             <!-- <div class="flex-shrink-0">
                 <img
                     class="rounded-full w-11 h-11"
@@ -28,4 +45,5 @@ const props = defineProps({
             </div>
         </div>
     </div>
+    <BaseModal v-if="isShowModal" :title="modalTitle" :description="modalDescription" :onClose="handleCloseModal" />
 </template>

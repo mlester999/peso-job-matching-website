@@ -66,12 +66,15 @@ const sidebarOpen = ref(false)
 
 const showNotificationsDropdown = ref(false);
 
+const isNotificationIconClicked = ref(false);
+
 // Toggle Notification Dropdown
 const toggleNotificationsDropdown = () => {
     showNotificationsDropdown.value = !showNotificationsDropdown.value;
 
     if (showNotificationsDropdown.value) {
         auth.updateViewedNotifications(auth.user.applicant.id);
+        isNotificationIconClicked.value = true;
     }
 };
 
@@ -231,7 +234,7 @@ watch(() => auth.user, (user) => {
                                 class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
                                 <span class="sr-only">View notifications</span>
                                 <BellIcon class="h-6 w-6" aria-hidden="true" />
-                                <span v-if="isNotificationsViewed"
+                                <span v-if="isNotificationsViewed && !isNotificationIconClicked"
                                     class="absolute right-0 top-0 block h-2.5 w-2.5 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-green-400 ring-2 ring-white" />
                                 <span v-else
                                     class="absolute right-0 top-0 block h-2.5 w-2.5 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-gray-300 ring-2 ring-white" />
