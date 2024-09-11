@@ -41,8 +41,14 @@ const handleSubmit = async () => {
                                         you've provided and are ready to move forward, click the "Confirm" button below.
                                     </p>
                                     <div class="mt-6 w-full items-center justify-center">
-                                        <button type="submit"
-                                            class="rounded-md w-full bg-blue-600 px-3 py-2 text-md font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Confirm</button>
+                                        <button :disabled="onboarding.isLoading" type="submit"
+                                            class="rounded-md w-full bg-blue-600 px-3 py-2 text-md font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                                            :class="[
+                                                onboarding.isLoading
+                                                    ? 'bg-gradient-to-r from-[#85a5ff] to-[#4b8dff] hover:shadow-none'
+                                                    : 'bg-gradient-to-r from-[#468ef9] to-[#0c66ee]',
+                                            ]">{{
+                    onboarding.isLoading ? 'Loading...' : 'Confirm' }}</button>
                                     </div>
                                 </div>
                             </div>
