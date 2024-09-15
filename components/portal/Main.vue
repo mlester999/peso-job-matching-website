@@ -3,9 +3,92 @@ import { MegaphoneIcon, EnvelopeOpenIcon, UsersIcon, PencilSquareIcon } from '@h
 import { useAuthStore } from '@/store/useAuthStore';
 import { toast } from 'vue3-toastify';
 import { usePortalStore } from '~/store/usePortalStore';
+import { messageService } from '~/helpers/message'
+import BotIcon from '~/public/icons/bot.png'
 
 const auth = useAuthStore();
 const portal = usePortalStore();
+
+const messageData = ref([])
+const botTyping = ref(false)
+const inputDisable = ref(false)
+
+const botOptions = {
+    botAvatarImg: BotIcon,
+    boardContentBg: '#f4f4f4',
+    msgBubbleBgBot: '#fff',
+    inputPlaceholder: 'Type here...',
+    inputDisableBg: '#fff',
+    inputDisablePlaceholder: 'Hit the buttons above to respond'
+}
+
+const botStart = () => {
+    // Get token if you want to build a private bot
+    // Request first message here
+
+    // Fake typing for the first message
+    if (messageData.value.length === 0) {
+        botTyping.value = true
+        setTimeout(() => {
+            botTyping.value = false
+            messageData.value.push({
+                agent: 'bot',
+                type: 'button',
+                text: 'How can we help you today?',
+                options: [
+                    {
+                        'text': 'Search Suport Articles',
+                        'value': 'search',
+                        'action': 'postback'
+                    },
+                    {
+                        'text': 'Submit Support Ticket',
+                        'value': 'submit_ticket',
+                        'action': 'postback'
+                    }
+                ],
+                disableInput: true
+            })
+            inputDisable.value = true;
+        }, 1000)
+    }
+}
+
+const msgSend = (value) => {
+    // Push the user's message to board
+    messageData.value.push({
+        agent: 'user',
+        type: 'text',
+        text: value.text
+    })
+
+    getResponse()
+}
+
+// Submit the message from user to bot API, then get the response from Bot
+const getResponse = async () => {
+    // Loading
+    botTyping.value = true
+
+    // Post the message from user here
+    // Then get the response as below
+
+    try {
+        const response = await messageService.createMessage()
+        const replyMessage = {
+            agent: 'bot',
+            ...response
+        }
+
+        inputDisable.value = response.disableInput
+        messageData.value.push(replyMessage)
+    } catch (error) {
+        console.error('Error fetching response:', error)
+    } finally {
+        // Finish
+        botTyping.value = false
+    }
+}
 
 onMounted(() => {
     if (portal.isUpdated) {
@@ -51,5 +134,7 @@ const stats = [
         </dl>
         <iframe class="w-full aspect-video" src="https://www.youtube.com/embed/aN-OpYShP3U" frameborder="0"
             allowfullscreen></iframe>
+        <BotUI :options="botOptions" :messages="messageData" :bot-typing="botTyping" :input-disable="inputDisable"
+            :is-open="false" @init="botStart" @msg-send="msgSend" />
     </div>
 </template>
