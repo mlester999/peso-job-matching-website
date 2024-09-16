@@ -13,6 +13,16 @@ const messageData = ref([])
 const botTyping = ref(false)
 const inputDisable = ref(false)
 
+const statuses = [
+    'Disqualified',
+    'In Progress',
+    'For Interview',
+    'For Requirements',
+    'Qualified',
+    'For Deployment',
+    'Deployed',
+]
+
 const botOptions = {
     botAvatarImg: BotIcon,
     boardContentBg: '#f4f4f4',
@@ -37,13 +47,13 @@ const botStart = () => {
                 text: 'How can we help you today?',
                 options: [
                     {
-                        'text': 'Search Suport Articles',
-                        'value': 'search',
+                        'text': 'Know More About Us',
+                        'value': 'know_more_about_us',
                         'action': 'postback'
                     },
                     {
-                        'text': 'Submit Support Ticket',
-                        'value': 'submit_ticket',
+                        'text': 'Application Status',
+                        'value': 'application_status',
                         'action': 'postback'
                     }
                 ],
@@ -80,8 +90,43 @@ const getResponse = async () => {
             ...response
         }
 
-        inputDisable.value = response.disableInput
-        messageData.value.push(replyMessage)
+        if (messageData.value[messageData.value.length - 1].text === 'Know More About Us') {
+            inputDisable.value = false;
+            messageData.value.push({
+                agent: 'bot',
+                type: 'button',
+                text: 'PESO is a free multi-employment service facility managed by Local Government Units (LGUs) and State Universities and Colleges (SUCs) that upholds equal employment opportunities to every individual covered in the locality. PESO aims to fill job vacancies through referral and placement, career counseling, trainings, and seminars. PESO accommodates various individuals including job seekers, employers, students, out-of-school youth, migratory workers, and persons with disabilities.',
+                options: [
+                    {
+                        'text': 'Application Status',
+                        'value': 'application_status',
+                        'action': 'postback'
+                    }
+                ],
+            })
+        } else if (messageData.value[messageData.value.length - 1].text === 'Application Status') {
+            inputDisable.value = false;
+            messageData.value.push({
+                agent: 'bot',
+                type: 'button',
+                text: `Your latest application is currently ${statuses[auth.user.applicant.applications[auth.user.applicant.applications.length - 1].status]}. While waiting for the result of your application, you can watch Career Guidance video which can help you to your career. Thank you!`,
+                'options': [
+                    {
+                        'text': 'PESO Cabuyao - Career Guidance',
+                        'value': 'https://www.youtube.com/watch?v=aN-OpYShP3U',
+                        'action': 'url'
+                    },
+                    {
+                        'text': 'Know More About Us',
+                        'value': 'know_more_about_us',
+                        'action': 'postback'
+                    },
+
+                ],
+            })
+        } else {
+            messageData.value.push(replyMessage)
+        }
     } catch (error) {
         console.error('Error fetching response:', error)
     } finally {
