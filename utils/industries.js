@@ -12,7 +12,6 @@ export const industries = [
     { value: "IT", text: "IT BPO" },
     { value: "Manufacturing", text: "Manufacturing" },
     { value: "MiningAndQuarrying", text: "Mining And Quarrying" },
-    { value: "OtherCommunitySocialAndPersonalServiceActivities", text: "Other Community, Social And Personal Service Activities" },
     { value: "PublicAdministrationAndDefense", text: "Public Administration And Defense" },
     { value: "RealEstateRentingAndBusinessActivities", text: "Real Estate, Renting And Business Activities" },
     { value: "TransportStorageAndCommunication", text: "Transport, Storage And Communication" },
