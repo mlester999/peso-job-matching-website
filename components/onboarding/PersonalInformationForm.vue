@@ -283,11 +283,11 @@ const handleSubmit = async () => {
         <div class="mt-6 flex items-center justify-end gap-x-6">
             <button :disabled="onboarding.isLoading" type="submit"
                 class="rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-                :class="[
-                    onboarding.isLoading
-                        ? 'bg-gradient-to-r from-[#85a5ff] to-[#4b8dff] hover:shadow-none'
-                        : 'bg-gradient-to-r from-[#468ef9] to-[#0c66ee]',
-                ]">{{ onboarding.isLoading ? 'Loading...' : props.isFromDashboard
+                    :class="[
+                        onboarding.isLoading
+                            ? 'bg-gradient-to-r from-[#85a5ff] to-[#4b8dff] hover:shadow-none'
+                            : 'bg-gradient-to-r from-[#468ef9] to-[#0c66ee]',
+                    ]">{{ onboarding.isLoading ? 'Loading...' : props.isFromDashboard
                     ? 'Submit' : 'Next' }}</button>
         </div>
     </form>

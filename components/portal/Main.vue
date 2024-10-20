@@ -5,9 +5,181 @@ import { toast } from 'vue3-toastify';
 import { usePortalStore } from '~/store/usePortalStore';
 import { messageService } from '~/helpers/message'
 import BotIcon from '~/public/icons/bot.png'
+import { format, subMonths, addMonths, startOfYear } from 'date-fns'
+import {
+    Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, PointElement,
+    LineElement, ArcElement
+} from 'chart.js'
+import { Bar, Line, Pie } from 'vue-chartjs'
+
+// Register
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, PointElement,
+    LineElement, ArcElement)
 
 const auth = useAuthStore();
 const portal = usePortalStore();
+
+// Get the current month and year
+const currentMonth = format(new Date(), 'MMMM')
+const previousMonth = format(subMonths(new Date(), 1), 'MMMM')
+const currentYear = format(new Date(), 'yyyy')
+
+const months = [];
+for (let month = 0; month < 12; month++) {
+    // Format the month as YYYY-MM
+    const formattedMonth = `${currentYear}-${String(month + 1).padStart(2, '0')}`;
+    months.push(formattedMonth);
+}
+
+const backgroundColors = ['#41B883', '#E46651', '#00D8FF', '#DD1B16'];
+
+// Dynamically create the title based on the current date
+const topSkillsChartTitle = `Top Skills Demand (${previousMonth === 'January' ? '' : 'January - '}${previousMonth} ${currentYear})`
+const industryGrowthChartTitle = `Top Hiring Companies (${previousMonth === 'January' ? '' : 'January - '}${previousMonth} ${currentYear})`
+
+const topSkillChartData = ref({
+    labels: auth.topSkillsDemand.map(item => item.skill),
+    datasets:
+        [{
+            label: 'Skill Count',
+            backgroundColor: '#f87979',
+            data: auth.topSkillsDemand.map(item => item.count),
+        }]
+})
+const topSkillChartOptions = ref({
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+        title: {
+            display: true,
+            text: topSkillsChartTitle,
+            font: {
+                size: 18,
+            },
+        },
+    },
+    scales: {
+        y: {
+            ticks: {
+                stepSize: 1,
+                beginAtZero: true,
+            },
+        }
+    }
+})
+
+const industryGrowthChartData = ref({
+    labels: Array.from({ length: 12 }, (_, i) => format(addMonths(startOfYear(new Date()), i), 'MMMM')),
+    datasets: auth.industryGrowth.overall_top_industries
+        .map((item, index) => {
+            return {
+                label: item.industry,
+                backgroundColor: backgroundColors[index],
+                data: months.map((month) => {
+                    if (auth.industryGrowth.top_industries_per_month[month]) {
+                        return auth.industryGrowth.top_industries_per_month[month]?.[index]?.count ?? 0
+                    }
+                    return 0;
+                })
+            }
+        })
+})
+const industryGrowthChartOptions = ref({
+    responsive: true,
+    maintainAspectRatio: true,
+    interaction: {
+        mode: 'index',
+        intersect: false,
+    },
+    stacked: false,
+    plugins: {
+        title: {
+            display: true,
+            text: 'Industry Growth',
+            font: {
+                size: 18,
+            },
+        },
+    },
+    scales: {
+        y: {
+            ticks: {
+                stepSize: 1,
+                beginAtZero: true,
+            },
+        }
+    },
+    legend: {
+        display: true,
+        position: 'top',
+        labels: {
+            boxWidth: 80,
+            fontColor: 'black'
+        }
+    },
+    tooltips: {
+        mode: 'index',
+        intersect: false,
+        position: 'nearest'
+    }
+})
+
+const salaryTrendsChartData = ref({
+    labels: ['January', 'February', 'March', 'April', 'May'],
+    datasets: [
+        {
+            label: 'Data One',
+            backgroundColor: '#f87979',
+            data: [40, 20, 12, 50, 10],
+        },
+    ],
+})
+const salaryTrendsChartOptions = ref({
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+        title: {
+            display: true,
+            text: 'Salary Trends',
+            font: {
+                size: 18,
+            },
+        },
+    },
+    scales: {
+        y: {
+            ticks: {
+                stepSize: 1,
+                beginAtZero: true,
+            },
+        }
+    }
+})
+
+const topHiringCompaniesChartData = ref({
+    labels: ['VueJs', 'EmberJs', 'ReactJs', 'AngularJs'],
+    datasets: [
+        {
+            backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
+            data: [40, 20, 80, 10]
+        }
+    ]
+})
+const topHiringCompaniesChartOptions = ref({
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        title: {
+            display: true,
+            text: industryGrowthChartTitle,
+            font: {
+                size: 18,
+            },
+        }
+    },
+})
+
+
 
 const messageData = ref([])
 const botTyping = ref(false)
@@ -157,7 +329,7 @@ const stats = [
         <!-- <BaseBanner v-if="auth.user.applicant.applications[0].status === 0"
             :title="`Welcome, ${auth.user.applicant.first_name}`"
             description="You are now successfully a registered applicant. Your CV is under review, and in the meantime, you can update your profile if needed. Thank you and good luck." /> -->
-        <dl class="my-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- <dl class="my-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             <div v-for="item in stats" :key="item.id"
                 class="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
                 <dt>
@@ -175,6 +347,20 @@ const stats = [
                         </div>
                     </div>
                 </dd>
+            </div>
+        </dl> -->
+        <dl class="my-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
+            <div class="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
+                <Bar :data="topSkillChartData" :options="topSkillChartOptions" />
+            </div>
+            <div class="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
+                <Line :data="industryGrowthChartData" :options="industryGrowthChartOptions" />
+            </div>
+            <div class="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
+                <Line :data="salaryTrendsChartData" :options="salaryTrendsChartOptions" />
+            </div>
+            <div class="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
+                <Pie :data="topHiringCompaniesChartData" :options="topHiringCompaniesChartOptions" />
             </div>
         </dl>
         <iframe class="w-full aspect-video" src="https://www.youtube.com/embed/aN-OpYShP3U" frameborder="0"

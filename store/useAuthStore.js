@@ -7,6 +7,36 @@ export const useAuthStore = defineStore('auth', () => {
   const isLoading = ref(false);
   const errorMessage = ref('');
   const emailForReset = ref('');
+  const topSkillsDemand = ref(null);
+  const industryGrowth = ref(null);
+
+  const fetchTopSkillsDemand = async () => {
+    const token = nuxtStorage.localStorage.getData('Token');
+
+    if (token) {
+      try {
+        const { data } = await useApiFetch('/api/top-skills-demand');
+
+        topSkillsDemand.value = data.value;
+      } catch (error) {
+        console.error('Error fetching top skills demand data:', error);
+      }
+    }
+  };
+
+  const fetchIndustryGrowth = async () => {
+    const token = nuxtStorage.localStorage.getData('Token');
+
+    if (token) {
+      try {
+        const { data } = await useApiFetch('/api/industry-growth');
+
+        industryGrowth.value = data.value;
+      } catch (error) {
+        console.error('Error fetching indstury growth data:', error);
+      }
+    }
+  };
 
   const fetchUser = async () => {
     const token = nuxtStorage.localStorage.getData('Token');
@@ -244,5 +274,5 @@ export const useAuthStore = defineStore('auth', () => {
       return updatedNotificationsResponse;
     };
 
-  return { user, isLoading, errorMessage, emailForReset, login, logout, register, application, verifyUsingSms, verifyUsingEmail, verifyContactNumber, verifyEmailAddress, sendResetPasswordLink, resetPassword, fetchUser, fetchResetPasswordEmail, updateViewedNotifications };
+  return { user, isLoading, errorMessage, emailForReset, topSkillsDemand, industryGrowth, login, logout, register, application, verifyUsingSms, verifyUsingEmail, verifyContactNumber, verifyEmailAddress, sendResetPasswordLink, resetPassword, fetchUser, fetchResetPasswordEmail, updateViewedNotifications, fetchTopSkillsDemand, fetchIndustryGrowth };
 });

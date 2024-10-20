@@ -43,7 +43,7 @@ useHead({
 });
 
 const auth = useAuthStore();
-console.log('auth: ', auth);
+
 const form = ref({
     email: ''
 });

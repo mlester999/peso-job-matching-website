@@ -24,9 +24,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             return navigateTo('/verify');
         }
 
-        if (store.user.applicant.applications[0].is_draft) {
+        if (store.user.applicant.applications[0]?.is_draft) {
             return navigateTo('/onboarding');
         }
+
+        await store.fetchTopSkillsDemand();
+        await store.fetchIndustryGrowth();
       }
 
       if (to.path === '/onboarding') {
@@ -34,13 +37,13 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
           return navigateTo('/verify');
           }
 
-        if (!store.user.applicant.applications[0].is_draft) {
+        if (!store.user.applicant.applications[0]?.is_draft) {
             return navigateTo('/portal');
         }
       }
 
       if (to.path === '/' || to.path === '/login' || to.path === '/register' || to.path === '/forgot-password' || to.path === '/reset-password') {
-        if (store.user.applicant.applications[0].is_draft) {
+        if (store.user.applicant.applications[0]?.is_draft) {
             return navigateTo('/onboarding');
         } else {
             return navigateTo('/portal');
