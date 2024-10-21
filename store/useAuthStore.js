@@ -9,6 +9,8 @@ export const useAuthStore = defineStore('auth', () => {
   const emailForReset = ref('');
   const topSkillsDemand = ref(null);
   const industryGrowth = ref(null);
+  const topHiringCompanies = ref(null);
+  const locationBasedTrends = ref(null);
 
   const fetchTopSkillsDemand = async () => {
     const token = nuxtStorage.localStorage.getData('Token');
@@ -34,6 +36,34 @@ export const useAuthStore = defineStore('auth', () => {
         industryGrowth.value = data.value;
       } catch (error) {
         console.error('Error fetching indstury growth data:', error);
+      }
+    }
+  };
+
+  const fetchTopHiringCompanies = async () => {
+    const token = nuxtStorage.localStorage.getData('Token');
+
+    if (token) {
+      try {
+        const { data } = await useApiFetch('/api/top-hiring-companies');
+
+        topHiringCompanies.value = data.value;
+      } catch (error) {
+        console.error('Error fetching top hiring companies data:', error);
+      }
+    }
+  };
+
+  const fetchLocationBasedTrends = async () => {
+    const token = nuxtStorage.localStorage.getData('Token');
+
+    if (token) {
+      try {
+        const { data } = await useApiFetch('/api/location-based-trends');
+
+        locationBasedTrends.value = data.value;
+      } catch (error) {
+        console.error('Error fetching location based trends data:', error);
       }
     }
   };
@@ -274,5 +304,5 @@ export const useAuthStore = defineStore('auth', () => {
       return updatedNotificationsResponse;
     };
 
-  return { user, isLoading, errorMessage, emailForReset, topSkillsDemand, industryGrowth, login, logout, register, application, verifyUsingSms, verifyUsingEmail, verifyContactNumber, verifyEmailAddress, sendResetPasswordLink, resetPassword, fetchUser, fetchResetPasswordEmail, updateViewedNotifications, fetchTopSkillsDemand, fetchIndustryGrowth };
+  return { user, isLoading, errorMessage, emailForReset, topSkillsDemand, industryGrowth, topHiringCompanies, locationBasedTrends, login, logout, register, application, verifyUsingSms, verifyUsingEmail, verifyContactNumber, verifyEmailAddress, sendResetPasswordLink, resetPassword, fetchUser, fetchResetPasswordEmail, updateViewedNotifications, fetchTopSkillsDemand, fetchIndustryGrowth, fetchTopHiringCompanies, fetchLocationBasedTrends };
 });

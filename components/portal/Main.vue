@@ -10,7 +10,7 @@ import {
     Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, PointElement,
     LineElement, ArcElement
 } from 'chart.js'
-import { Bar, Line, Pie } from 'vue-chartjs'
+import { Bar, Line, Pie, Doughnut } from 'vue-chartjs'
 
 // Register
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, PointElement,
@@ -36,6 +36,7 @@ const backgroundColors = ['#41B883', '#E46651', '#00D8FF', '#DD1B16'];
 // Dynamically create the title based on the current date
 const topSkillsChartTitle = `Top Skills Demand (${previousMonth === 'January' ? '' : 'January - '}${previousMonth} ${currentYear})`
 const industryGrowthChartTitle = `Top Hiring Companies (${previousMonth === 'January' ? '' : 'January - '}${previousMonth} ${currentYear})`
+const locationBasedTrendsChartTitle = `Location-based Trends (${previousMonth === 'January' ? '' : 'January - '}${previousMonth} ${currentYear})`
 
 const topSkillChartData = ref({
     labels: auth.topSkillsDemand.map(item => item.skill),
@@ -157,11 +158,11 @@ const salaryTrendsChartOptions = ref({
 })
 
 const topHiringCompaniesChartData = ref({
-    labels: ['VueJs', 'EmberJs', 'ReactJs', 'AngularJs'],
+    labels: auth.topHiringCompanies.map(el => el.name),
     datasets: [
         {
             backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-            data: [40, 20, 80, 10]
+            data: auth.topHiringCompanies.map(el => el.total_applications)
         }
     ]
 })
@@ -179,7 +180,28 @@ const topHiringCompaniesChartOptions = ref({
     },
 })
 
-
+const locationBasedTrendsChartData = ref({
+    labels: auth.locationBasedTrends.map(el => el.barangay),
+    datasets: [
+        {
+            backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
+            data: auth.locationBasedTrends.map(el => el.total_barangays)
+        }
+    ]
+})
+const locationBasedTrendsChartOptions = ref({
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        title: {
+            display: true,
+            text: locationBasedTrendsChartTitle,
+            font: {
+                size: 18,
+            },
+        }
+    },
+})
 
 const messageData = ref([])
 const botTyping = ref(false)
@@ -361,6 +383,9 @@ const stats = [
             </div>
             <div class="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
                 <Pie :data="topHiringCompaniesChartData" :options="topHiringCompaniesChartOptions" />
+            </div>
+            <div class="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
+                <Doughnut :data="locationBasedTrendsChartData" :options="locationBasedTrendsChartOptions" />
             </div>
         </dl>
         <iframe class="w-full aspect-video" src="https://www.youtube.com/embed/aN-OpYShP3U" frameborder="0"

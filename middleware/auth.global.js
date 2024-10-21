@@ -30,6 +30,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
         await store.fetchTopSkillsDemand();
         await store.fetchIndustryGrowth();
+        await store.fetchTopHiringCompanies();
+        await store.fetchLocationBasedTrends();
       }
 
       if (to.path === '/onboarding') {
