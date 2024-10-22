@@ -9,8 +9,10 @@ export const useAuthStore = defineStore('auth', () => {
   const emailForReset = ref('');
   const topSkillsDemand = ref(null);
   const industryGrowth = ref(null);
+  const salaryTrends = ref(null);
   const topHiringCompanies = ref(null);
   const locationBasedTrends = ref(null);
+  const skillBasedTrends = ref(null);
 
   const fetchTopSkillsDemand = async () => {
     const token = nuxtStorage.localStorage.getData('Token');
@@ -35,7 +37,21 @@ export const useAuthStore = defineStore('auth', () => {
 
         industryGrowth.value = data.value;
       } catch (error) {
-        console.error('Error fetching indstury growth data:', error);
+        console.error('Error fetching industry growth data:', error);
+      }
+    }
+  };
+
+  const fetchSalaryTrends = async () => {
+    const token = nuxtStorage.localStorage.getData('Token');
+
+    if (token) {
+      try {
+        const { data } = await useApiFetch('/api/salary-trends');
+
+        salaryTrends.value = data.value;
+      } catch (error) {
+        console.error('Error fetching salary trends data:', error);
       }
     }
   };
@@ -64,6 +80,20 @@ export const useAuthStore = defineStore('auth', () => {
         locationBasedTrends.value = data.value;
       } catch (error) {
         console.error('Error fetching location based trends data:', error);
+      }
+    }
+  };
+
+  const fetchSkillBasedTrends = async () => {
+    const token = nuxtStorage.localStorage.getData('Token');
+
+    if (token) {
+      try {
+        const { data } = await useApiFetch('/api/skill-based-trends');
+
+        skillBasedTrends.value = data.value;
+      } catch (error) {
+        console.error('Error fetching skill based trends data:', error);
       }
     }
   };
@@ -304,5 +334,5 @@ export const useAuthStore = defineStore('auth', () => {
       return updatedNotificationsResponse;
     };
 
-  return { user, isLoading, errorMessage, emailForReset, topSkillsDemand, industryGrowth, topHiringCompanies, locationBasedTrends, login, logout, register, application, verifyUsingSms, verifyUsingEmail, verifyContactNumber, verifyEmailAddress, sendResetPasswordLink, resetPassword, fetchUser, fetchResetPasswordEmail, updateViewedNotifications, fetchTopSkillsDemand, fetchIndustryGrowth, fetchTopHiringCompanies, fetchLocationBasedTrends };
+  return { user, isLoading, errorMessage, emailForReset, topSkillsDemand, industryGrowth, salaryTrends, topHiringCompanies, locationBasedTrends, skillBasedTrends, login, logout, register, application, verifyUsingSms, verifyUsingEmail, verifyContactNumber, verifyEmailAddress, sendResetPasswordLink, resetPassword, fetchUser, fetchResetPasswordEmail, updateViewedNotifications, fetchTopSkillsDemand, fetchIndustryGrowth, fetchTopHiringCompanies, fetchLocationBasedTrends, fetchSkillBasedTrends, fetchSalaryTrends };
 });

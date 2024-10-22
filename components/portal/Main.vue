@@ -37,6 +37,7 @@ const backgroundColors = ['#41B883', '#E46651', '#00D8FF', '#DD1B16'];
 const topSkillsChartTitle = `Top Skills Demand (${previousMonth === 'January' ? '' : 'January - '}${previousMonth} ${currentYear})`
 const industryGrowthChartTitle = `Top Hiring Companies (${previousMonth === 'January' ? '' : 'January - '}${previousMonth} ${currentYear})`
 const locationBasedTrendsChartTitle = `Location-based Trends (${previousMonth === 'January' ? '' : 'January - '}${previousMonth} ${currentYear})`
+const skillBasedTrendsChartTitle = `Skill-based Trends (${previousMonth === 'January' ? '' : 'January - '}${previousMonth} ${currentYear})`
 
 const topSkillChartData = ref({
     labels: auth.topSkillsDemand.map(item => item.skill),
@@ -126,18 +127,22 @@ const industryGrowthChartOptions = ref({
 })
 
 const salaryTrendsChartData = ref({
-    labels: ['January', 'February', 'March', 'April', 'May'],
-    datasets: [
-        {
-            label: 'Data One',
-            backgroundColor: '#f87979',
-            data: [40, 20, 12, 50, 10],
-        },
-    ],
+    labels: Array.from({ length: 12 }, (_, i) => format(addMonths(startOfYear(new Date()), i), 'MMMM')),
+    datasets: auth.salaryTrends.map((salaryTrend, index) => {
+        return {
+            label: salaryTrend[0].industry,
+            backgroundColor: backgroundColors[index],
+            data: salaryTrend.map(item => Math.round(item.average_salary) ?? 0),
+        }
+    })
 })
 const salaryTrendsChartOptions = ref({
     responsive: true,
     maintainAspectRatio: true,
+    interaction: {
+        mode: 'index',
+        intersect: false,
+    },
     plugins: {
         title: {
             display: true,
@@ -154,6 +159,19 @@ const salaryTrendsChartOptions = ref({
                 beginAtZero: true,
             },
         }
+    },
+    legend: {
+        display: true,
+        position: 'top',
+        labels: {
+            boxWidth: 80,
+            fontColor: 'black'
+        }
+    },
+    tooltips: {
+        mode: 'index',
+        intersect: false,
+        position: 'nearest'
     }
 })
 
@@ -196,6 +214,29 @@ const locationBasedTrendsChartOptions = ref({
         title: {
             display: true,
             text: locationBasedTrendsChartTitle,
+            font: {
+                size: 18,
+            },
+        }
+    },
+})
+
+const skillBasedTrendsChartData = ref({
+    labels: auth.skillBasedTrends.map(el => el.jobPositionTitle),
+    datasets: [
+        {
+            backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
+            data: auth.skillBasedTrends.map(el => el.total_skills)
+        }
+    ]
+})
+const skillBasedTrendsChartOptions = ref({
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        title: {
+            display: true,
+            text: skillBasedTrendsChartTitle,
             font: {
                 size: 18,
             },
@@ -386,6 +427,9 @@ const stats = [
             </div>
             <div class="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
                 <Doughnut :data="locationBasedTrendsChartData" :options="locationBasedTrendsChartOptions" />
+            </div>
+            <div class="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
+                <Doughnut :data="skillBasedTrendsChartData" :options="skillBasedTrendsChartOptions" />
             </div>
         </dl>
         <iframe class="w-full aspect-video" src="https://www.youtube.com/embed/aN-OpYShP3U" frameborder="0"
