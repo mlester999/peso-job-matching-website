@@ -204,7 +204,7 @@ const handleSubmit = async () => {
             onboarding.checkCurrentProgress(4);
         } else {
             if (props.isCreate) {
-                navigateTo('/portal/skills-and-profession');
+                navigateTo('/portal/list-of-credentials');
             } else {
                 toast.success('Updated info successfully');
             }
@@ -234,7 +234,7 @@ const filteredIndustry = (query) =>
     <form @submit.prevent="handleSubmit" class="col-span-3 m-24">
         <div class="space-y-12">
             <div class="border-b border-gray-900/10 pb-12">
-                <h2 class="text-2xl font-bold leading-7 text-gray-900">Work Experience</h2>
+                <h2 class="text-2xl font-bold leading-7 text-gray-900">Work Experience (If Applicable)</h2>
 
                 <div v-for="(field, index) in form" :key="index"
                     class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 pb-12"

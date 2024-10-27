@@ -11,6 +11,7 @@ const props = defineProps({
     class: String,
     isContactNumber: Boolean,
     isNumber: Boolean,
+    max: String
 })
 
 const emit = defineEmits(['update:modelValue']);
@@ -56,7 +57,7 @@ watch(() => props.modelValue, (newVal) => {
     <div class="mt-2">
         <p v-if="isContactNumber" class="absolute text-sm mt-2 ml-2">+63</p>
         <input :id="id" :value="modelValue" @input="handleInput" @keydown="checkDigit" :name="label" :type="type"
-            :autocomplete="id" :disabled="disabled"
+            :autocomplete="id" :disabled="disabled" :max="max"
             :class="['block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6 disabled:bg-gray-200', props.class, props.isContactNumber ? 'pl-10' : '']" />
     </div>
     <p v-if="errorMessage" class="text-red-600 text-sm mt-1">{{ errorMessage }}</p>

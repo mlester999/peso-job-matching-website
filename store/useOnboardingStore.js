@@ -97,6 +97,31 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     }
   };
 
+  const submitListOfCredentials = async (info, applicantId, application) => {
+    isLoading.value = true;
+    await useApiFetch('/sanctum/csrf-cookie');
+
+    if (application) {
+      const updateListOfCredentialsResponse = await useApiFetch(`/api/update-list-of-credentials/${application.id}`, {
+        method: 'PUT',
+        body: info,
+      });
+
+      isLoading.value = false;
+
+      return updateListOfCredentialsResponse;
+    } else {
+      const submitListOfCredentialsResponse = await useApiFetch(`/api/submit-list-of-credentials/${applicantId}`, {
+        method: 'POST',
+        body: info,
+      });
+  
+      isLoading.value = false;
+  
+      return submitListOfCredentialsResponse;
+    }
+  };
+
   const submitSkills = async (info, applicantId, application) => {
     isLoading.value = true;
     await useApiFetch('/sanctum/csrf-cookie');
@@ -143,5 +168,5 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     currentProgress.value = progress;
   }
 
-  return { currentPage, isLoading, currentProgress, jobPositions, jobPositionSkills, getJobPositions, setJobPositionSkills, submitPersonalInformation, submitEducationalBackground, submitWorkExperience, submitSkills, confirmOnboarding, updateCurrentPage, checkCurrentProgress };
+  return { currentPage, isLoading, currentProgress, jobPositions, jobPositionSkills, getJobPositions, setJobPositionSkills, submitPersonalInformation, submitEducationalBackground, submitWorkExperience, submitListOfCredentials, submitSkills, confirmOnboarding, updateCurrentPage, checkCurrentProgress };
 });

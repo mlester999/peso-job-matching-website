@@ -14,8 +14,10 @@ const onboarding = useOnboardingStore();
 
         <OnboardingWorkExperienceForm v-if="onboarding.currentPage === 3" />
 
-        <OnboardingSkillsAndProfessionForm v-if="onboarding.currentPage === 4" />
+        <OnboardingListOfCredentialsForm v-if="onboarding.currentPage === 4" />
 
-        <OnboardingConfirmationForm v-if="onboarding.currentPage === 5" />
+        <OnboardingSkillsAndProfessionForm v-if="onboarding.currentPage === 5" />
+
+        <OnboardingConfirmationForm v-if="onboarding.currentPage === 6" />
     </div>
 </template>

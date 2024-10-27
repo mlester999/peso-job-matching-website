@@ -10,9 +10,14 @@ const applications = auth.user.applicant.applications;
 onBeforeMount(() => {
     if (applications[applications.length - 1].education) {
         if (applications[applications.length - 1].work_experience) {
-            if (applications[applications.length - 1].skills) {
-                onboarding.updateCurrentPage(5);
-                onboarding.checkCurrentProgress(5);
+            if (applications[applications.length - 1].list_of_credentials) {
+                if (applications[applications.length - 1].skills) {
+                    onboarding.updateCurrentPage(6);
+                    onboarding.checkCurrentProgress(6);
+                } else {
+                    onboarding.updateCurrentPage(5);
+                    onboarding.checkCurrentProgress(5);
+                }
             } else {
                 onboarding.updateCurrentPage(4);
                 onboarding.checkCurrentProgress(4);
@@ -36,8 +41,9 @@ const steps = [
     { name: 'Personal Information', page: 1, status: 'current' },
     { name: 'Educational Background', page: 2, status: 'upcoming' },
     { name: 'Work Experience', page: 3, status: 'upcoming' },
-    { name: 'Skills & Profession', page: 4, status: 'upcoming' },
-    { name: 'Confirmation', page: 5, status: 'upcoming' },
+    { name: 'List of Credentials', page: 4, status: 'upcoming' },
+    { name: 'Skills & Profession', page: 5, status: 'upcoming' },
+    { name: 'Confirmation', page: 6, status: 'upcoming' },
 ]
 </script>
 

@@ -108,8 +108,8 @@ const handleSubmit = async () => {
         errors.value.skills = [];
 
         if (!props.isFromDashboard) {
-            onboarding.updateCurrentPage(5);
-            onboarding.checkCurrentProgress(5);
+            onboarding.updateCurrentPage(6);
+            onboarding.checkCurrentProgress(6);
         } else {
             if (props.isCreate) {
                 navigateTo('/portal/confirmation');

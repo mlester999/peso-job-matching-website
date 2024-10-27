@@ -20,7 +20,8 @@ import {
     XMarkIcon,
     AcademicCapIcon,
     BriefcaseIcon,
-    IdentificationIcon
+    IdentificationIcon,
+    ClipboardDocumentListIcon
 } from '@heroicons/vue/24/outline'
 import {
     UserIcon
@@ -54,7 +55,8 @@ const navigation = ref([
     { name: 'Personal Information', href: '/portal/personal-information', icon: UsersIcon, disabled: false },
     { name: 'Educational Background', href: '/portal/educational-background', icon: AcademicCapIcon, disabled: Boolean(!applications[applications.length - 1].is_draft) || Boolean(!applications[applications.length - 1].zip_code) },
     { name: 'Work Experience', href: '/portal/work-experience', icon: BriefcaseIcon, disabled: Boolean(!applications[applications.length - 1].is_draft) || Boolean(!applications[applications.length - 1].education) },
-    { name: 'Skills and Profession', href: '/portal/skills-and-profession', icon: DocumentDuplicateIcon, disabled: Boolean(!applications[applications.length - 1].is_draft) || Boolean(!applications[applications.length - 1].work_experience) },
+    { name: 'List of Credentials', href: '/portal/list-of-credentials', icon: ClipboardDocumentListIcon, disabled: Boolean(!applications[applications.length - 1].is_draft) || Boolean(!applications[applications.length - 1].work_experience) },
+    { name: 'Skills and Profession', href: '/portal/skills-and-profession', icon: DocumentDuplicateIcon, disabled: Boolean(!applications[applications.length - 1].is_draft) || Boolean(!applications[applications.length - 1].list_of_credentials) },
     { name: 'Confirmation', href: '/portal/confirmation', icon: CheckBadgeIcon, disabled: Boolean(!applications[applications.length - 1].is_draft) || Boolean(!applications[applications.length - 1].skills) },
     // { name: 'View Curriculum Vitae', href: '/portal/view-curriculum-vitae', icon: PrinterIcon },
 ]);
@@ -91,7 +93,8 @@ watch(() => auth.user, (user) => {
         { name: 'Personal Information', href: '/portal/personal-information', icon: UsersIcon, disabled: false },
         { name: 'Educational Background', href: '/portal/educational-background', icon: AcademicCapIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(!user.applicant.applications[user.applicant.applications.length - 1].zip_code) },
         { name: 'Work Experience', href: '/portal/work-experience', icon: BriefcaseIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(!user.applicant.applications[user.applicant.applications.length - 1].education) },
-        { name: 'Skills and Profession', href: '/portal/skills-and-profession', icon: DocumentDuplicateIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(!user.applicant.applications[user.applicant.applications.length - 1].work_experience) },
+        { name: 'List of Credentials', href: '/portal/list-of-credentials', icon: ClipboardDocumentListIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(!user.applicant.applications[user.applicant.applications.length - 1].work_experience) },
+        { name: 'Skills and Profession', href: '/portal/skills-and-profession', icon: DocumentDuplicateIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(!user.applicant.applications[user.applicant.applications.length - 1].list_of_credentials) },
         { name: 'Confirmation', href: '/portal/confirmation', icon: CheckBadgeIcon, disabled: Boolean(!user.applicant.applications[user.applicant.applications.length - 1].is_draft) || Boolean(!user.applicant.applications[user.applicant.applications.length - 1].skills) },
         // { name: 'View Curriculum Vitae', href: '/portal/view-curriculum-vitae', icon: PrinterIcon },
     ]

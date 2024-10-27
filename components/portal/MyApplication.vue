@@ -23,6 +23,8 @@ onMounted(() => {
 
         <OnboardingWorkExperienceForm :isFromDashboard="true" :application="application" />
 
+        <OnboardingListOfCredentialsForm :isFromDashboard="true" :application="application" />
+
         <OnboardingSkillsAndProfessionForm :isFromDashboard="true" :application="application" />
     </div>
 </template>

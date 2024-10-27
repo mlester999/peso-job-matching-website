@@ -15,6 +15,7 @@ const inputSms = ref('')
 const inputEmail = ref('')
 const isEmailSelected = ref(false);
 const isSmsSelected = ref(false);
+const isLoading = ref(false);
 
 const isInputSmsError = ref(false);
 const isInputEmailError = ref(false);
@@ -22,15 +23,19 @@ const isInputEmailError = ref(false);
 const otp = ref('');
 
 const selectEmail = async () => {
+    isLoading.value = true;
     const emailOtp = await auth.verifyUsingEmail(auth.user.applicant.id);
     isEmailSelected.value = true;
     otp.value = emailOtp;
+    isLoading.value = false;
 }
 
 const selectSms = async () => {
+    isLoading.value = true;
     const smsResponse = await auth.verifyUsingSms(auth.user.applicant.id);
     isSmsSelected.value = true;
-    otp.value = smsResponse.code;
+    otp.value = smsResponse?.code ?? '000000';
+    isLoading.value = false;
 }
 
 const submitOtp = () => {
@@ -82,16 +87,26 @@ const submitEmail = () => {
     <div v-if="!isEmailSelected && !isSmsSelected" class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
         <div class="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12 space-y-6">
             <div>
-                <button @click="selectEmail" type="button"
-                    class="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Verify
+                <button :disabled="isLoading" @click="selectEmail" type="button"
+                    class="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                    :class="[
+                        isLoading
+                            ? 'bg-gradient-to-r from-[#85a5ff] to-[#4b8dff] hover:shadow-none'
+                            : 'bg-gradient-to-r from-[#468ef9] to-[#0c66ee]',
+                    ]">Verify
                     using Email
                     <EnvelopeIcon class="ml-1 h-6 w-6" aria-hidden="true" />
                 </button>
             </div>
 
             <div>
-                <button @click="selectSms" type="button"
-                    class="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Verify
+                <button :disabled="isLoading" @click="selectSms" type="button"
+                    class="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                    :class="[
+                        isLoading
+                            ? 'bg-gradient-to-r from-[#85a5ff] to-[#4b8dff] hover:shadow-none'
+                            : 'bg-gradient-to-r from-[#468ef9] to-[#0c66ee]',
+                    ]">Verify
                     using SMS
                     <ChatBubbleBottomCenterTextIcon class="ml-1 h-6 w-6" aria-hidden="true" />
                 </button>
