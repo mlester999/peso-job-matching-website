@@ -10,19 +10,23 @@ onMounted(() => {
 })
 
 const statusClasses = [
-    'text-red-600 bg-red-50 ring-red-500/10',
-    'text-gray-600 bg-gray-50 ring-gray-500/10',
-    'text-blue-600 bg-blue-50 ring-blue-500/10',
-    'text-orange-600 bg-orange-50 ring-orange-500/10',
-    'text-yellow-700 bg-yellow-50 ring-yellow-600/20',
-    'text-green-700 bg-green-50 ring-green-600/20',
-    'text-red-700 bg-red-50 ring-red-600/10',
-]
+    'text-red-600 bg-red-50 ring-red-500/10',          // Disqualified
+    'text-gray-600 bg-gray-50 ring-gray-500/10',       // In Progress
+    'text-indigo-600 bg-indigo-50 ring-indigo-500/10', // Interview
+    'text-indigo-700 bg-indigo-50 ring-indigo-600/10', // For Interview
+    'text-orange-600 bg-orange-50 ring-orange-500/20', // Requirements
+    'text-orange-700 bg-orange-50 ring-orange-600/20', // For Requirements
+    'text-yellow-600 bg-yellow-50 ring-yellow-500/10', // Qualified
+    'text-blue-600 bg-blue-50 ring-blue-500/10',       // For Deployment
+    'text-green-700 bg-green-50 ring-green-600/20'     // Deployed
+];
 
 const statuses = [
     'Disqualified',
     'In Progress',
+    'Interview',
     'For Interview',
+    'Requirements',
     'For Requirements',
     'Qualified',
     'For Deployment',

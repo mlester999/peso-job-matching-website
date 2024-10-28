@@ -251,7 +251,9 @@ const inputDisable = ref(false)
 const statuses = [
     'Disqualified',
     'In Progress',
+    'Interview',
     'For Interview',
+    'Requirements',
     'For Requirements',
     'Qualified',
     'For Deployment',
