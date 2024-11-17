@@ -148,7 +148,7 @@ watch(
             <div class="border-b border-gray-900/10 pb-12">
                 <h2 class="text-2xl font-bold leading-7 text-gray-900">Skills & Profession</h2>
 
-                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 pb-12">
+                <div class="mt-10 grid grid-cols-1 md:gap-x-6 gap-y-8 sm:grid-cols-6 pb-12">
                     <div class="sm:col-span-6">
                         <Combobox as="div" class="max-w-lg" v-model="selectedJobPositionTitle"
                             @update:modelValue="form.jobPositionQuery = ''">
@@ -190,7 +190,7 @@ watch(
                     </div>
 
                     <div v-if="selectedJobPositionSkills && selectedJobPositionSkills.length > 0"
-                        class="px-4 sm:px-0 md:col-span-3">
+                        class="px-4 sm:px-0 col-span-12 md:col-span-3">
                         <h2 class="block text-sm font-medium leading-6 text-gray-900 pb-2">Related Skills: </h2>
                         <template v-for="(jobSkill, index) in selectedJobPositionSkills" :key="jobSkill.id">
                             <BaseCheckboxList :title="jobSkill" :addSkill="addSkill" :removeSkill="removeSkill"
@@ -203,7 +203,7 @@ watch(
                     </div>
 
                     <div v-if="selectedJobPositionSkills && selectedJobPositionSkills.length > 0"
-                        class="px-4 sm:px-0 md:col-span-3">
+                        class="px-4 sm:px-0 col-span-12 md:col-span-3">
                         <h2 class="block text-sm font-medium leading-6 text-gray-900 pb-2">Selected Skills: </h2>
                         <BaseTextList :data="form.skills" title="Skills" />
                     </div>

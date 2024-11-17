@@ -179,6 +179,8 @@ const topHiringCompaniesChartData = ref({
     labels: auth.topHiringCompanies.map(el => el.name),
     datasets: [
         {
+            label: '',
+            fill: false,
             backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
             data: auth.topHiringCompanies.map(el => el.total_applications)
         }
@@ -193,6 +195,18 @@ const topHiringCompaniesChartOptions = ref({
             text: industryGrowthChartTitle,
             font: {
                 size: 18,
+            },
+        },
+        legend:
+        {
+            display: false
+        }
+    },
+    scales: {
+        y: {
+            ticks: {
+                stepSize: 1,
+                beginAtZero: true,
             },
         }
     },
@@ -217,6 +231,18 @@ const locationBasedTrendsChartOptions = ref({
             font: {
                 size: 18,
             },
+        },
+        legend:
+        {
+            display: false
+        }
+    },
+    scales: {
+        y: {
+            ticks: {
+                stepSize: 1,
+                beginAtZero: true,
+            },
         }
     },
 })
@@ -239,6 +265,18 @@ const skillBasedTrendsChartOptions = ref({
             text: skillBasedTrendsChartTitle,
             font: {
                 size: 18,
+            },
+        },
+        legend:
+        {
+            display: false
+        }
+    },
+    scales: {
+        y: {
+            ticks: {
+                stepSize: 1,
+                beginAtZero: true,
             },
         }
     },
@@ -425,13 +463,13 @@ const stats = [
                 <Line :data="salaryTrendsChartData" :options="salaryTrendsChartOptions" />
             </div>
             <div class="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
-                <Pie :data="topHiringCompaniesChartData" :options="topHiringCompaniesChartOptions" />
+                <Line :data="topHiringCompaniesChartData" :options="topHiringCompaniesChartOptions" />
             </div>
             <div class="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
-                <Doughnut :data="locationBasedTrendsChartData" :options="locationBasedTrendsChartOptions" />
+                <Line :data="locationBasedTrendsChartData" :options="locationBasedTrendsChartOptions" />
             </div>
             <div class="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
-                <Doughnut :data="skillBasedTrendsChartData" :options="skillBasedTrendsChartOptions" />
+                <Line :data="skillBasedTrendsChartData" :options="skillBasedTrendsChartOptions" />
             </div>
         </dl>
         <iframe class="w-full aspect-video" src="https://www.youtube.com/embed/aN-OpYShP3U" frameborder="0"
