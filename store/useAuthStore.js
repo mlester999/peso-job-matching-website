@@ -220,7 +220,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       const { data, error } = await useFetch(
-        'http://localhost:8000/api/application',
+        'https://peso-job-matching-portal-6im3u.ondigitalocean.app/api/application',
         {
           method: 'POST',
           body: formData,

@@ -14,7 +14,7 @@ export function useApiFetch(path, options) {
       };
     }
   
-    return useFetch('http://localhost:8000' + path, {
+    return useFetch('https://peso-job-matching-portal-6im3u.ondigitalocean.app' + path, {
       credentials: 'include',
       watch: false,
       ...options,
