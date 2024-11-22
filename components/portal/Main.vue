@@ -40,12 +40,12 @@ const locationBasedTrendsChartTitle = `Location-based Trends (${previousMonth ==
 const skillBasedTrendsChartTitle = `Skill-based Trends (${previousMonth === 'January' ? '' : 'January - '}${previousMonth} ${currentYear})`
 
 const topSkillChartData = ref({
-    labels: auth.topSkillsDemand.map(item => item.skill),
+    labels: auth?.topSkillsDemand.map(item => item.skill),
     datasets:
         [{
             label: 'Skill Count',
             backgroundColor: '#f87979',
-            data: auth.topSkillsDemand.map(item => item.count),
+            data: auth?.topSkillsDemand.map(item => item.count),
         }]
 })
 const topSkillChartOptions = ref({
@@ -72,14 +72,14 @@ const topSkillChartOptions = ref({
 
 const industryGrowthChartData = ref({
     labels: Array.from({ length: 12 }, (_, i) => format(addMonths(startOfYear(new Date()), i), 'MMMM')),
-    datasets: auth.industryGrowth.overall_top_industries
+    datasets: auth?.industryGrowth?.overall_top_industries
         .map((item, index) => {
             return {
                 label: item.industry,
                 backgroundColor: backgroundColors[index],
                 data: months.map((month) => {
-                    if (auth.industryGrowth.top_industries_per_month[month]) {
-                        return auth.industryGrowth.top_industries_per_month[month]?.[index]?.count ?? 0
+                    if (auth.industryGrowth?.top_industries_per_month[month]) {
+                        return auth.industryGrowth?.top_industries_per_month[month]?.[index]?.count ?? 0
                     }
                     return 0;
                 })
@@ -128,7 +128,7 @@ const industryGrowthChartOptions = ref({
 
 const salaryTrendsChartData = ref({
     labels: Array.from({ length: 12 }, (_, i) => format(addMonths(startOfYear(new Date()), i), 'MMMM')),
-    datasets: auth.salaryTrends.map((salaryTrend, index) => {
+    datasets: auth?.salaryTrends.map((salaryTrend, index) => {
         return {
             label: salaryTrend[0].industry,
             backgroundColor: backgroundColors[index],
@@ -176,13 +176,13 @@ const salaryTrendsChartOptions = ref({
 })
 
 const topHiringCompaniesChartData = ref({
-    labels: auth.topHiringCompanies.map(el => el.name),
+    labels: auth?.topHiringCompanies.map(el => el.name),
     datasets: [
         {
             label: '',
             fill: false,
             backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-            data: auth.topHiringCompanies.map(el => el.total_applications)
+            data: auth?.topHiringCompanies.map(el => el.total_applications)
         }
     ]
 })
@@ -213,11 +213,11 @@ const topHiringCompaniesChartOptions = ref({
 })
 
 const locationBasedTrendsChartData = ref({
-    labels: auth.locationBasedTrends.map(el => el.barangay),
+    labels: auth?.locationBasedTrends.map(el => el.barangay),
     datasets: [
         {
             backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-            data: auth.locationBasedTrends.map(el => el.total_barangays)
+            data: auth?.locationBasedTrends.map(el => el.total_barangays)
         }
     ]
 })
@@ -248,11 +248,11 @@ const locationBasedTrendsChartOptions = ref({
 })
 
 const skillBasedTrendsChartData = ref({
-    labels: auth.skillBasedTrends.map(el => el.jobPositionTitle),
+    labels: auth?.skillBasedTrends.map(el => el.jobPositionTitle),
     datasets: [
         {
             backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-            data: auth.skillBasedTrends.map(el => el.total_skills)
+            data: auth?.skillBasedTrends.map(el => el.total_skills)
         }
     ]
 })
